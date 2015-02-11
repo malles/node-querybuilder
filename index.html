@@ -1,0 +1,3355 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>node-querybuilder by kylefarris</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/kylefarris/node-querybuilder">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/kylefarris/node-querybuilder/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/kylefarris/node-querybuilder/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>node-querybuilder</h1>
+          <p>Node QueryBuilder Adapter for Node.js (tags: nodejs, node, mysql, active record, activerecord, querybuilder, query builder)</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/kylefarris">kylefarris</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p><a href="https://travis-ci.org/kylefarris/node-querybuilder"><img src="https://travis-ci.org/kylefarris/node-querybuilder.svg?branch=master" alt="Build Status"></a></p>
+
+<h1>
+<a id="universal-querybuilder-for-nodejs" class="anchor" href="#universal-querybuilder-for-nodejs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Universal QueryBuilder for Node.js</h1>
+
+<p>Node-QueryBuilder is an ambitious attempt to create a kind of "universal translator" which provides programmers a consistent API to connect to and query <em>any</em> database (traditional and NoSQL) supported by the module. The module is highly extensible and, in theory, can suppport any database provided that the driver has been written for it.</p>
+
+<p>The API of this module very closely mimics Codeigniter's Active Record (now called "Query Builder") library and much of the code has been directly translated from the PHP libraries in Codeigniter to JavaScript. A lot of credit needs to go to the folks over at EllisLab (<a href="https://ellislab.com/codeigniter">https://ellislab.com/codeigniter</a>) and all the contributors to the Codeigniter project (of which I am one): <a href="https://github.com/EllisLab/CodeIgniter/">https://github.com/EllisLab/CodeIgniter/</a></p>
+
+<p>The primary benefits of this module (currently) are:</p>
+
+<ul>
+<li>Ability to write queries agnostically to the database you intend to query</li>
+<li>Supports all basic database commands (insert, update, delete, select, etc...)</li>
+<li>Extend capabilities from the most popular native database drivers in NPM.</li>
+<li>Supports method chaining</li>
+<li>Automatically escapes field values and identifiers by default</li>
+<li>Is fully unit tested</li>
+<li><strong>Very thoroughly documented</strong></li>
+<li>Allows for greater flexibility and more control over a full ORM</li>
+<li>Ligher-weight than an ORM</li>
+<li>Allows you to drop down to the native methods of your driver if you choose to</li>
+<li>Allows for different drivers for different versions (SQLite 2 vs SQLite 3)</li>
+<li>The order in which you call the methods is irrelevant except for the execution methods (get, insert, update, delete) which must be called last.</li>
+<li>Can used as a learning tool/Rosetta stone</li>
+</ul>
+
+<h1>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h1>
+
+<ul>
+<li><a href="#database-drivers">Database Drivers</a></li>
+<li><a href="#how-to-install">How to Install</a></li>
+<li><a href="#license-info">License Info</a></li>
+<li><a href="#quick-example">Quick Example</a></li>
+<li>
+<a href="#connecting-to-your-database">Connecting to Your Database</a>
+
+<ul>
+<li><a href="#quick-reference">Quick Reference</a></li>
+<li><a href="#standard-connection-settings">Standard Connection Settings</a></li>
+<li><a href="#choosing-the-database-type">Choosing the Database Type</a></li>
+<li><a href="#choosing-the-connection-type">Choosing the Connection Type</a></li>
+</ul>
+</li>
+<li>
+<a href="#api-methods">API Methods</a>
+
+<ul>
+<li><a href="#chainable-methods">Chainable Methods</a></li>
+<li><a href="#execution-methods">Execution Methods</a></li>
+<li><a href="#other-library-specific-methods">Other Library-Specific Methods</a></li>
+</ul>
+</li>
+<li><a href="#contribute">Contribute</a></li>
+</ul>
+
+<h1>
+<a id="database-drivers" class="anchor" href="#database-drivers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Database Drivers</h1>
+
+<h2>
+<a id="currently-written" class="anchor" href="#currently-written" aria-hidden="true"><span class="octicon octicon-link"></span></a>Currently Written:</h2>
+
+<ul>
+<li>MySQL / MariaDB</li>
+</ul>
+
+<h2>
+<a id="coming-soon" class="anchor" href="#coming-soon" aria-hidden="true"><span class="octicon octicon-link"></span></a>Coming Soon:</h2>
+
+<ul>
+<li>Postgres</li>
+<li>Microsoft SQL Server</li>
+<li>Oracle</li>
+<li>SQLite</li>
+<li>MongoDB</li>
+</ul>
+
+<h1>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to install</h1>
+
+<pre><code>npm install node-querybuilder
+</code></pre>
+
+<h1>
+<a id="license-info" class="anchor" href="#license-info" aria-hidden="true"><span class="octicon octicon-link"></span></a>License Info</h1>
+
+<p>Licensed under the GPL license and MIT:</p>
+
+<ul>
+<li><a href="http://www.opensource.org/licenses/GPL-license.php">http://www.opensource.org/licenses/GPL-license.php</a></li>
+<li><a href="http://www.opensource.org/licenses/mit-license.php">http://www.opensource.org/licenses/mit-license.php</a></li>
+</ul>
+
+<h1>
+<a id="quick-example" class="anchor" href="#quick-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Example</h1>
+
+<p>This quick example shows how to connect to and asynchronously query a MySQL database using a single connection.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> {
+    host<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>localhost<span class="pl-pds">'</span></span>,
+    database<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>mydatabase<span class="pl-pds">'</span></span>,
+    user<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>myuser<span class="pl-pds">'</span></span>,
+    password<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>MyP@ssw0rd<span class="pl-pds">'</span></span>
+};
+<span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>single<span class="pl-pds">'</span></span>);
+
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>position<span class="pl-pds">'</span></span>)
+    .where({type<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>rocky<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>diameter &lt;<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">12000</span>})
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>planets<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>,<span class="pl-vpf">response</span>) {
+        <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(<span class="pl-s1"><span class="pl-pds">"</span>Uh oh! Couldn't get results: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> err.msg);
+
+        <span class="pl-c">// SELECT `name`, `position` FROM `planets` WHERE `type` = 'rocky' AND `diameter` &lt; 12000</span>
+        <span class="pl-en">console</span><span class="pl-s3">.log</span>(<span class="pl-s1"><span class="pl-pds">"</span>Query Ran: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> qb.last_query());
+
+        <span class="pl-c">// [{name: 'Mercury', position: 1}, {name: 'Mars', position: 4}]</span>
+        <span class="pl-en">console</span>.<span class="pl-sc">dir</span>(response);
+    }
+);</pre></div>
+
+<h1>
+<a id="connecting-to-your-database" class="anchor" href="#connecting-to-your-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>Connecting to Your Database</h1>
+
+<h2>
+<a id="quick-reference" class="anchor" href="#quick-reference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Reference</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left">Driver</th>
+<th align="left">Default</th>
+<th align="left">Ready</th>
+<th align="left">single</th>
+<th align="left">pool</th>
+<th align="left">cluster</th>
+<th align="left">Additional Connection Options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="//www.npmjs.com/package/mysql">mysql</a></td>
+<td align="left">✓</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left"><a href="https://github.com/felixge/node-mysql#connection-options">node-mysql connection options</a></td>
+</tr>
+<tr>
+<td align="left"><a href="//www.npmjs.com/package/mssql">mssql</a></td>
+<td align="left"></td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">???</td>
+<td align="left">???</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><a href="//www.npmjs.com/package/sqlite3">sqlite3</a></td>
+<td align="left"></td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">???</td>
+<td align="left">???</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><a href="//www.npmjs.com/package/oracle">oracle</a></td>
+<td align="left"></td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">???</td>
+<td align="left">???</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><a href="//www.npmjs.com/package/pg">postgres</a></td>
+<td align="left"></td>
+<td align="left">Pending</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">???</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><a href="//www.npmjs.com/package/mongodb">mongodb</a></td>
+<td align="left"></td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">???</td>
+<td align="left">???</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="standard-connection-settings" class="anchor" href="#standard-connection-settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard Connection Settings</h2>
+
+<p>The options listed below are available for all database drivers. Additional properties may be passed if the driver of the database you are connecting to supports them. See the "Additional Connection Options" column above for a link to the a specific driver's connection options documentation.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Option</th>
+<th align="left">Default</th>
+<th align="left">Optional</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>host</strong></td>
+<td align="left">localhost</td>
+<td align="left">No</td>
+<td align="left">The server you're connecting to</td>
+</tr>
+<tr>
+<td align="left"><strong>user</strong></td>
+<td align="left">NULL</td>
+<td align="left">No</td>
+<td align="left">The database user</td>
+</tr>
+<tr>
+<td align="left"><strong>password</strong></td>
+<td align="left">NULL</td>
+<td align="left">Yes</td>
+<td align="left">The database <code>user</code>'s password</td>
+</tr>
+<tr>
+<td align="left"><strong>database</strong></td>
+<td align="left">NULL</td>
+<td align="left">Yes</td>
+<td align="left">The database to connect to</td>
+</tr>
+<tr>
+<td align="left"><strong>port</strong></td>
+<td align="left">NULL</td>
+<td align="left">Yes</td>
+<td align="left">The database port to use when connecting</td>
+</tr>
+<tr>
+<td align="left"><strong>pool_size</strong></td>
+<td align="left">10</td>
+<td align="left">Yes</td>
+<td align="left">Max connections for <code>pool</code> connection type</td>
+</tr>
+<tr>
+<td align="left"><strong>debug</strong></td>
+<td align="left">false</td>
+<td align="left">Yes</td>
+<td align="left">If true, debug info will be place in app log</td>
+</tr>
+<tr>
+<td align="left"><strong>version</strong></td>
+<td align="left">default</td>
+<td align="left">Yes</td>
+<td align="left">Version of database driver to use</td>
+</tr>
+</tbody>
+</table>
+
+<p>The best way to store these options is in a JSON file outsite of your web root where only root and the server user can access them.</p>
+
+<p><strong>Example JSON File</strong></p>
+
+<p>We'll call this <code>db.json</code>.</p>
+
+<div class="highlight highlight-javascript"><pre>{
+    <span class="pl-s1"><span class="pl-pds">"</span>host<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>db.myserver.com<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>user<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>myusername<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>P@s$w0rD<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>database<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>myDB<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">"</span>pool_size<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">50</span>
+}</pre></div>
+
+<p><strong>Example App</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-c">// Second and third parameters of the QueryBuilder method default to 'mysql' and 'standard', respectively</span>
+<span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings);</pre></div>
+
+<p>Of course you can also just have a normal javascript object directly within your code somwhere if you're honing your inner Chuck Norris:</p>
+
+<p><strong>Chuck Norris App</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder({
+    host<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>db.myserver.com<span class="pl-pds">'</span></span>,
+    user<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>myusername<span class="pl-pds">'</span></span>,
+    password<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>P@s$w0rD<span class="pl-pds">'</span></span>,
+    database<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>MyDB<span class="pl-pds">'</span></span>,
+    pool_size<span class="pl-k">:</span> <span class="pl-c1">50</span>
+});</pre></div>
+
+<h2>
+<a id="choosing-the-database-type" class="anchor" href="#choosing-the-database-type" aria-hidden="true"><span class="octicon octicon-link"></span></a>Choosing the Database Type</h2>
+
+<p>This part is super simple. Just pass which one you'd like to use as the second paramter to the constructor (<code>mysql</code> is the default):</p>
+
+<p><strong><em>Example:</em></strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>postgres<span class="pl-pds">'</span></span>);</pre></div>
+
+<h2>
+<a id="choosing-the-connection-type" class="anchor" href="#choosing-the-connection-type" aria-hidden="true"><span class="octicon octicon-link"></span></a>Choosing the Connection Type</h2>
+
+<p>This library currently supports 3 connection methods:</p>
+
+<ul>
+<li>
+<strong><em>single</em></strong> (default)
+
+<ul>
+<li>This will use the driver's basic single connection capabilities. All connections to your app will use this single database connection. This is usually less than ideal for most web applications but might be quite suitable for command line scripts and the like. </li>
+<li>
+<strong>All drivers must have this connection type</strong>.</li>
+</ul>
+</li>
+<li>
+<strong><em>pool</em></strong>
+
+<ul>
+<li>This will utilize the driver's connection pooling capabilities if it is offered. Connection pooling allows your application to pull from a pool of connections that were created by the driver. Typically the connections will be handed out to requesting methods in a round-robin fashion. This is ideal for a web application.</li>
+</ul>
+</li>
+<li>
+<strong><em>cluster</em></strong>
+
+<ul>
+<li>When you have a cluster of servers and you want to create pools of connections to different servers to help load balance your stack, using the <code>cluster</code> connection type can come in handy. This is ideal for high-traffic web sites and applications that utilize a farm of database servers as opposed to just one.</li>
+</ul>
+</li>
+</ul>
+
+<p><strong>Note:</strong>
+You will specify the type of connection as the third parameter to the contructor</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);</pre></div>
+
+<h1>
+<a id="api-methods" class="anchor" href="#api-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>API Methods</h1>
+
+<p><strong><em>NOTE:</em></strong> The compatibility portions of these tables are subject to change as features and drivers are written!</p>
+
+<h2>
+<a id="chainable-methods" class="anchor" href="#chainable-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chainable Methods</h2>
+
+<p>Chainable methods can be called as many times as you'd like in any order you like. The final query will not be built and executed until one of the <a href="#execution-methods">execution methods</a>, like <code>get()</code>,  are callled. As the name implies, the methods can be chained together indefinitely but this is not required. You definitely call them individually with the same effect at execution time.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">API Method</th>
+<th align="left">SQL Command</th>
+<th align="center">MySQL</th>
+<th align="center">MSSQL</th>
+<th align="center">Oracle</th>
+<th align="center">SQLite</th>
+<th align="center">Postgres</th>
+<th align="center">Mongo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#select">select()</a></td>
+<td align="left">SELECT</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#distinct">distinct()</a></td>
+<td align="left">DISTINCT</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#min">select_min()</a></td>
+<td align="left">MIN</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#max">select_max()</a></td>
+<td align="left">MAX</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#avg">select_avg()</a></td>
+<td align="left">AVG</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#sum">select_sum()</a></td>
+<td align="left">SUM</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#from">from()</a></td>
+<td align="left">FROM</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#join">join()</a></td>
+<td align="left">JOIN</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#where">where()</a></td>
+<td align="left">WHERE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#where_in">where_in()</a></td>
+<td align="left">IN</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#where_not_in">where_not_in()</a></td>
+<td align="left">WHERE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#or_where">or_where()</a></td>
+<td align="left">WHERE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#or_where_in">or_where_in()</a></td>
+<td align="left">WHERE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#or_where_not_in">or_where_not_in()</a></td>
+<td align="left">WHERE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#like">like()</a></td>
+<td align="left">LIKE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#or_like">or_like()</a></td>
+<td align="left">LIKE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#or_not_like">or_not_like()</a></td>
+<td align="left">LIKE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#not_like">not_like()</a></td>
+<td align="left">LIKE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#group-by">group_by()</a></td>
+<td align="left">GROUP BY</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#having">having()</a></td>
+<td align="left">HAVING</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#or_having">or_having()</a></td>
+<td align="left">HAVING</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#order-by">order_by()</a></td>
+<td align="left">ORDER BY</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#limit">limit()</a></td>
+<td align="left">LIMIT</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#offset">offset()</a></td>
+<td align="left">OFFSET</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#set">set()</a></td>
+<td align="left">SET</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<h3>
+<a id="select" class="anchor" href="#select" aria-hidden="true"><span class="octicon octicon-link"></span></a>SELECT</h3>
+
+<h4>
+<a id="selectfieldsescape" class="anchor" href="#selectfieldsescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.select(fields[,escape])</h4>
+
+<p>This method is used to specify the fields to pull into the resultset when running SELECT-like queries.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">fields</td>
+<td align="left">String/Array</td>
+<td align="left">Required</td>
+<td align="left">The fields in which to grab from the database</td>
+</tr>
+<tr>
+<td align="left">escape</td>
+<td align="left">Boolean</td>
+<td align="left">true</td>
+<td align="left">TRUE: auto-escape fields; FALSE: don't escape</td>
+</tr>
+</tbody>
+</table>
+
+<p>The fields provided to this method will be automatically escaped by the database driver. The <code>fields</code> paramter can be passed in 1 of 2 ways (field names will be trimmed in either scenario):</p>
+
+<p><strong><em>NOTE:</em></strong> If the select method is never called before an execution method is ran, 'SELECT *' will be assumed.</p>
+
+<ul>
+<li>String with fields seperated by a comma:
+
+<ul>
+<li><code>.select('foo, bar, baz')</code></li>
+</ul>
+</li>
+<li>Array of field names
+
+<ul>
+<li><code>.select(['foo', 'bar', 'baz'])</code></li>
+</ul>
+</li>
+</ul>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM galaxies</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,callback);
+
+<span class="pl-c">// Easier and same result:</span>
+qb.get(<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>An array of field names:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `foo`, `bar`, `baz`</span>
+qb.<span class="pl-s3">select</span>([<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>baz<span class="pl-pds">'</span></span>]);</pre></div>
+
+<p>You can chain the method together using different patterns if you want:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `foo`, `bar`, `baz`, `this`, `that`, `the_other`</span>
+qb.<span class="pl-s3">select</span>([<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>baz<span class="pl-pds">'</span></span>]).<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>this,that,the_other<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>You can alias your field names and they will be escaped properly as well:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `foo` as `f`, `bar` as `b`, `baz` as `z`</span>
+qb.<span class="pl-s3">select</span>([<span class="pl-s1"><span class="pl-pds">'</span>foo as f<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>bar as b<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>baz as z<span class="pl-pds">'</span></span>]);</pre></div>
+
+<p>You can optionally choose not to have the driver auto-escape the fieldnames (dangerous, but useful if you a utilize function in your select statement, for instance):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT CONCAT(first_name,' ',last_name) AS `full_name`</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>CONCAT(first_name,<span class="pl-pds">'</span></span> <span class="pl-s1"><span class="pl-pds">'</span>,last_name) AS `full_name`<span class="pl-pds">'</span></span>,<span class="pl-c1">false</span>);</pre></div>
+
+<p><strong><em>NOTE:</em></strong> If you use this technique to add driver-specific functions, it may (and probably will) cause unexpected outcomes with other database drivers!</p>
+
+<hr>
+
+<h3>
+<a id="distinct" class="anchor" href="#distinct" aria-hidden="true"><span class="octicon octicon-link"></span></a>DISTINCT</h3>
+
+<h4>
+<a id="distinct-1" class="anchor" href="#distinct-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>.distinct()</h4>
+
+<p>This SQL command is used to prevent duplicate rows from being returned in the resultset at the database level. It should only be used when querying data (execution methods: <code>.get()</code> &amp; <code>.get_where()</code>) (not inserting, updating or removing). If it's provided to another execution method, it will simply be ignored.</p>
+
+<p><strong><em>This method takes no parameters</em></strong></p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT DISTINCT `id`, `name`, `description` FROM `users`</span>
+qb.distinct().<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>id,name,description<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="min" class="anchor" href="#min" aria-hidden="true"><span class="octicon octicon-link"></span></a>MIN</h3>
+
+<h4>
+<a id="select_minfieldalias" class="anchor" href="#select_minfieldalias" aria-hidden="true"><span class="octicon octicon-link"></span></a>.select_min(field[,alias])</h4>
+
+<p>This SQL command is used to find the minimum value for a specific field within a resultset.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The field to get the minimum value of</td>
+</tr>
+<tr>
+<td align="left">alias</td>
+<td align="left">String</td>
+<td align="left">NULL</td>
+<td align="left">Optional alias to rename field</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT MIN(`age`) FROM `users`</span>
+qb.select_min(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can optionally include a second parameter to rename the resulting field</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT MIN(`age`) AS `min_age` FROM `users`</span>
+qb.select_min(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>min_age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="max" class="anchor" href="#max" aria-hidden="true"><span class="octicon octicon-link"></span></a>MAX</h3>
+
+<h4>
+<a id="select_maxfieldalias" class="anchor" href="#select_maxfieldalias" aria-hidden="true"><span class="octicon octicon-link"></span></a>.select_max(field[,alias])</h4>
+
+<p>This SQL command is used to find the maximum value for a specific field within a resultset.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The field to get the maximum value of</td>
+</tr>
+<tr>
+<td align="left">alias</td>
+<td align="left">String</td>
+<td align="left">NULL</td>
+<td align="left">Optional alias to rename field</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT MAX(`age`) FROM `users`</span>
+qb.select_max(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can optionally include a second parameter to rename the resulting field</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT MAX(`age`) AS `max_age` FROM `users`</span>
+qb.select_max(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>max_age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="avg" class="anchor" href="#avg" aria-hidden="true"><span class="octicon octicon-link"></span></a>AVG</h3>
+
+<h4>
+<a id="select_avgfieldalias" class="anchor" href="#select_avgfieldalias" aria-hidden="true"><span class="octicon octicon-link"></span></a>.select_avg(field[,alias])</h4>
+
+<p>This SQL command is used to find the average value for a specific field within a resultset.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The field to get the average value of</td>
+</tr>
+<tr>
+<td align="left">alias</td>
+<td align="left">String</td>
+<td align="left">NULL</td>
+<td align="left">Optional alias to rename field</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT AVG(`age`) FROM `users`</span>
+qb.select_avg(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can optionally include a second parameter to rename the resulting field</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT AVG(`age`) AS `avg_age` FROM `users`</span>
+qb.select_avg(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>avg_age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="sum" class="anchor" href="#sum" aria-hidden="true"><span class="octicon octicon-link"></span></a>SUM</h3>
+
+<h4>
+<a id="select_sumfieldalias" class="anchor" href="#select_sumfieldalias" aria-hidden="true"><span class="octicon octicon-link"></span></a>.select_sum(field[,alias])</h4>
+
+<p>This SQL command is used to find the minimum value for a specific field within a result set.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The field to get the minimum value of</td>
+</tr>
+<tr>
+<td align="left">alias</td>
+<td align="left">String</td>
+<td align="left">NULL</td>
+<td align="left">Optional alias to rename field</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT SUM(`age`) FROM `users`</span>
+qb.select_sum(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can optionally include a second parameter to rename the resulting field</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT SUM(`age`) AS `sum_age` FROM `users`</span>
+qb.select_sum(<span class="pl-s1"><span class="pl-pds">'</span>age<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>sum_age<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="from" class="anchor" href="#from" aria-hidden="true"><span class="octicon octicon-link"></span></a>FROM</h3>
+
+<h4>
+<a id="fromtables" class="anchor" href="#fromtables" aria-hidden="true"><span class="octicon octicon-link"></span></a>.from(tables)</h4>
+
+<p>This SQL command is used to determine which sources, available to the active connection, to obtain data from.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">tables</td>
+<td align="left">String/Array</td>
+<td align="left">Required</td>
+<td align="left">Table(s), view(s), etc... to grab data from</td>
+</tr>
+</tbody>
+</table>
+
+<p>You can provide tables, views, or any other valid source of data in a comma-seperated list (string) or an array. When more than one data-source is provided when connected to a traditional RDMS, the tables will joined using a basic join. You can also <code>.from()</code> multiple times to get the same effect (the order in which they are called does not matter).</p>
+
+<p>Aliases can be provided and they will be escaped properly.</p>
+
+<p><strong><em>NOTE:</em></strong> You can also pass table/view names into the <code>.get()</code> and <code>.get_where()</code> methods and forego this method entirely.</p>
+
+<p><strong>Examples</strong></p>
+
+<p><strong><em>Basic</em></strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `id`, `name`, `description` FROM `users`</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>id,name,description<span class="pl-pds">'</span></span>).from(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>).get(callback);</pre></div>
+
+<p><strong><em>Comma-Seperated</em></strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `u`.`id`, `u`.`name`, `u`.`description`, `g`.`name` AS `group_name` </span>
+<span class="pl-c">// FROM (`users` `u`, `groups` `g`)</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>u.id,u.name,u,description,g.name as group_name<span class="pl-pds">'</span></span>)
+    .from(<span class="pl-s1"><span class="pl-pds">'</span>users u, groups g<span class="pl-pds">'</span></span>)
+    .get(callback);</pre></div>
+
+<p><strong><em>Array of Tables</em></strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `u`.`id`, `u`.`name`, `u`.`description`, `g`.`name` AS `group_name` </span>
+<span class="pl-c">// FROM (`users` `u`, `groups` `g`)</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>u.id,u.name,u,description,g.name as group_name<span class="pl-pds">'</span></span>)
+    .from([<span class="pl-s1"><span class="pl-pds">'</span>users u<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>groups g<span class="pl-pds">'</span></span>])
+    .get(callback);</pre></div>
+
+<p><strong><em>Multiple From Calls</em></strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `u`.`id`, `u`.`name`, `u`.`description`, `g`.`name` AS `group_name`</span>
+<span class="pl-c">// FROM (`users` `u`, `groups` `g`)</span>
+qb.from(<span class="pl-s1"><span class="pl-pds">'</span>groups g<span class="pl-pds">'</span></span>).<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>u.id,u.name,u,description,g.name as group_name<span class="pl-pds">'</span></span>)
+    .from(<span class="pl-s1"><span class="pl-pds">'</span>users u<span class="pl-pds">'</span></span>)
+    .get(callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="join" class="anchor" href="#join" aria-hidden="true"><span class="octicon octicon-link"></span></a>JOIN</h3>
+
+<h4>
+<a id="jointablerelationdirection" class="anchor" href="#jointablerelationdirection" aria-hidden="true"><span class="octicon octicon-link"></span></a>.join(table,relation[,direction])</h4>
+
+<p>This SQL command is used query multiple tables related and connected by keys and get a single resultset.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table or view to join to.</td>
+</tr>
+<tr>
+<td align="left">relation</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The "ON" statement that relates two tables together</td>
+</tr>
+<tr>
+<td align="left">direction</td>
+<td align="left">String</td>
+<td align="left">"left"</td>
+<td align="left">Direction of the join (see join types list below)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Join Types/Directions</strong></p>
+
+<ul>
+<li>left</li>
+<li>right</li>
+<li>outer</li>
+<li>inner</li>
+<li>left outer</li>
+<li>right outer</li>
+</ul>
+
+<p>The table/view and the relationship of it to the main table/view (see: <code>.from()</code>) must be specified. The specific type of join defaults to "left" if none is specified (althought it is recommened to always supply this value for readability). Multiple function calls can be made if you need several joins in one query. Aliases can (and should) be provided and they will be escaped properly.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>If no direction is specified, "left" will be used:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `u`.`id`, `u`.`name`, `t`.`name` AS `type_name` </span>
+<span class="pl-c">// FROM `users` `u`</span>
+<span class="pl-c">// LEFT JOIN `types` `t` ON `t`.`id`=`u`.`type_id`</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>u.id,u.name,t.name as type_name<span class="pl-pds">'</span></span>).from(<span class="pl-s1"><span class="pl-pds">'</span>users u<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>types t<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>t.id=u.type_id<span class="pl-pds">'</span></span>)
+    .get(callback);</pre></div>
+
+<p>You may specify a direction:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `u`.`id`, `u`.`name`, `t`.`name` AS `type_name` </span>
+<span class="pl-c">// FROM `users` `u`</span>
+<span class="pl-c">// RIGHT OUTER JOIN `types` `t` ON `t`.`id`=`u`.`type_id`</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>u.id,u.name,t.name as type_name<span class="pl-pds">'</span></span>).from(<span class="pl-s1"><span class="pl-pds">'</span>users u<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>types t<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>t.id=u.type_id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>right outer<span class="pl-pds">'</span></span>)
+    .get(callback);</pre></div>
+
+<p>Multiple function calls can be made if you need several joins in one query:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `u`.`id`, `u`.`name`, `t`.`name`  AS `type`, `l`.`name` AS `location`</span>
+<span class="pl-c">// FROM `users` `u`</span>
+<span class="pl-c">// LEFT JOIN `types` `t` ON `t`.`id`=`u`.`type_id`</span>
+<span class="pl-c">// LEFT JOIN `locations` `l` ON `l`.`id`=`u`.`location_id`</span>
+<span class="pl-s">var</span> select <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>u.id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>u.name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>t.name as type<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>l.name as location<span class="pl-pds">'</span></span>];
+qb.<span class="pl-s3">select</span>(select).from(<span class="pl-s1"><span class="pl-pds">'</span>users u<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>types t<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>t.id=u.type_id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>right outer<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>locations l<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>l.id=u.location_id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>left<span class="pl-pds">'</span></span>)
+    .get(callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="where" class="anchor" href="#where" aria-hidden="true"><span class="octicon octicon-link"></span></a>WHERE</h3>
+
+<p>This SQL command is used to limit the resultset based on filters.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field/filters</td>
+<td align="left">String/Object</td>
+<td align="left">Required</td>
+<td align="left">A field name, a WHERE clause, or an object of key/value pairs</td>
+</tr>
+<tr>
+<td align="left">value</td>
+<td align="left">Mixed</td>
+<td align="left">N/A</td>
+<td align="left">When the first parameter is a field name, this is the value</td>
+</tr>
+<tr>
+<td align="left">escape</td>
+<td align="left">Boolean</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE: Escape field names and values; FALSE: No escaping</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="wherefieldvalueescape" class="anchor" href="#wherefieldvalueescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.where(field[,value[,escape]])</h4>
+
+<p>This method can be called in many different ways depending on your style and the format of the data that you have at the time of calling it. For standard SQL, all clauses will be joined with 'AND'—if you need to join clauses by 'OR', please us <code>.or_where()</code>. By default, all values and field names passed to this function will be escaped automatically to produce safer queries. You can turn this off by passing <strong>false</strong> into the third parameter.</p>
+
+<p>If a valid field name is passed in the first parameter, you can pass an array the second parameter and the call will be treated as a <a href="#where_in">.where_in()</a>.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>If you just want to pass a single filter at a time:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `galaxy` FROM `universe` WHERE `planet_name` = 'Earth'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>galaxy<span class="pl-pds">'</span></span>).where(<span class="pl-s1"><span class="pl-pds">'</span>planet_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Earth<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>universe<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>If you need more complex filtering using different operators (<code>&lt;, &gt;, &lt;=, =&gt;, !=, &lt;&gt;, etc...</code>), you can simply provide that operator along with the key in the first parameter. The '=' is assumed if a custom operator is not passed:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `planet` FROM `planets` WHERE `order` &lt;= 3</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>planet<span class="pl-pds">'</span></span>).where(<span class="pl-s1"><span class="pl-pds">'</span>order &lt;=<span class="pl-pds">'</span></span>,<span class="pl-c1">3</span>).get(<span class="pl-s1"><span class="pl-pds">'</span>planets<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can conveniently pass an object of key:value pairs (which can also contain custom operators):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `planet` FROM `planets` WHERE `order` &lt;= 3 AND `class` = 'M'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>planet<span class="pl-pds">'</span></span>).where({<span class="pl-s1"><span class="pl-pds">'</span>order &lt;=<span class="pl-pds">'</span></span><span class="pl-k">:</span><span class="pl-c1">3</span>, class<span class="pl-k">:</span><span class="pl-s1"><span class="pl-pds">'</span>M<span class="pl-pds">'</span></span>}).get(<span class="pl-s1"><span class="pl-pds">'</span>planets<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can construct complex WHERE clauses manually and they will be escaped properly as long as there are no paranthesis within it. <em>Please, for custom clauses containing subqueries, make sure you escape everything properly!</em> <strong><em>ALSO NOTE:</em></strong> with this method, there may be conflicts between database drivers!</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `planet` FROM `planets` WHERE `order` &lt;= 3 AND `class` = 'M'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>planet<span class="pl-pds">'</span></span>).where(<span class="pl-s1"><span class="pl-pds">"</span>order &lt;= 3 AND class = 'M'<span class="pl-pds">"</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>planets<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can pass a non-empty array as a value and that portion will be treated as a call to <code>.where_in()</code>:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `star_system` FROM `star_systems` </span>
+<span class="pl-c">// WHERE `planet_count` &gt;= 4, `star` IN('Sun', 'Betelgeuse')</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>star_system<span class="pl-pds">'</span></span>)
+    .where({<span class="pl-s1"><span class="pl-pds">'</span>planet_count &gt;=<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">4</span>, star<span class="pl-k">:</span> [<span class="pl-s1"><span class="pl-pds">'</span>Sun<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Betelgeuse<span class="pl-pds">'</span></span>])
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="or_where"></a></p>
+
+<h4>
+<a id="or_wherefieldvalueescape" class="anchor" href="#or_wherefieldvalueescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.or_where(field[,value[,escape]])</h4>
+
+<p>This method functions identically to <a href="#where">.where()</a> except that it joins clauses with 'OR' instead of 'AND'.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `star_system` FROM `star_systems` </span>
+<span class="pl-c">// WHERE `star` = 'Sun' OR `star` = 'Betelgeuse'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>star_system<span class="pl-pds">'</span></span>).where(<span class="pl-s1"><span class="pl-pds">'</span>star<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Sun<span class="pl-pds">'</span></span>)
+    .or_where(<span class="pl-s1"><span class="pl-pds">'</span>star<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Betelgeuse<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="where_in"></a></p>
+
+<h4>
+<a id="where_infieldvaluesescape" class="anchor" href="#where_infieldvaluesescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.where_in(field,values[,escape])</h4>
+
+<p>This will create a "WHERE IN" statement in traditional SQL which is useful when you're trying to find rows with fields matching many different values... It will be joined with existing "WHERE" statements with 'AND'.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `star_system` FROM `star_systems` </span>
+<span class="pl-c">// WHERE `star` IN('Sun', 'Betelgeuse', 'Sirius', 'Vega', 'Alpha Centauri')</span>
+<span class="pl-s">var</span> stars <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>Sun<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Betelgeuse<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Sirius<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Vega<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Alpha Centauri<span class="pl-pds">'</span></span>];
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>star_system<span class="pl-pds">'</span></span>).where_in(<span class="pl-s1"><span class="pl-pds">'</span>star<span class="pl-pds">'</span></span>,stars).get(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="or_where_in"></a></p>
+
+<h4>
+<a id="or_where_infieldvaluesescape" class="anchor" href="#or_where_infieldvaluesescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.or_where_in(field,values[,escape])</h4>
+
+<p>Same as <code>.where_in()</code> except the clauses are joined by 'OR'.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `star_system` FROM `star_systems` </span>
+<span class="pl-c">// WHERE `planet_count` = 4 OR `star` IN('Sun', 'Betelgeuse')</span>
+<span class="pl-s">var</span> stars <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>Sun<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Betelgeuse<span class="pl-pds">'</span></span>];
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>star_system<span class="pl-pds">'</span></span>).where(<span class="pl-s1"><span class="pl-pds">'</span>planet_count<span class="pl-pds">'</span></span>,<span class="pl-c1">4</span>)
+    .or_where_in(<span class="pl-s1"><span class="pl-pds">'</span>star<span class="pl-pds">'</span></span>,stars)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="where_not_in"></a></p>
+
+<h4>
+<a id="where_not_infieldvaluesescape" class="anchor" href="#where_not_infieldvaluesescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.where_not_in(field,values[,escape])</h4>
+
+<p>Same as <code>.where_in()</code> except this generates a "WHERE NOT IN" statement. All clauses are joined with 'AND'.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `star_system` FROM `star_systems` </span>
+<span class="pl-c">// WHERE `star` NOT IN('Sun', 'Betelgeuse', 'Sirius', 'Vega', 'Alpha Centauri')</span>
+<span class="pl-s">var</span> stars <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>Sun<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Betelgeuse<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Sirius<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Vega<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Alpha Centauri<span class="pl-pds">'</span></span>];
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>star_system<span class="pl-pds">'</span></span>).where_not_in(<span class="pl-s1"><span class="pl-pds">'</span>star<span class="pl-pds">'</span></span>,stars).get(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="or_where_not_in"></a></p>
+
+<h4>
+<a id="or_where_not_infieldvaluesescape" class="anchor" href="#or_where_not_infieldvaluesescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.or_where_not_in(field,values[,escape])</h4>
+
+<p>Same as <code>.where_not_in()</code> except that clauses are joined with 'OR'.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `star_system` FROM `star_systems` </span>
+<span class="pl-c">// WHERE `star` NOT IN('Sun', 'Betelgeuse')</span>
+<span class="pl-c">// OR `planet_count` NOT IN [2,4,6,8]</span>
+<span class="pl-s">var</span> stars <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>Sun<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Betelgeuse<span class="pl-pds">'</span></span>];
+<span class="pl-s">var</span> planet_sizes <span class="pl-k">=</span> [<span class="pl-c1">2</span>,<span class="pl-c1">4</span>,<span class="pl-c1">6</span>,<span class="pl-c1">8</span>];
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>star_system<span class="pl-pds">'</span></span>)
+    .where_not_in(<span class="pl-s1"><span class="pl-pds">'</span>star<span class="pl-pds">'</span></span>,stars)
+    .or_where_not_in(<span class="pl-s1"><span class="pl-pds">'</span>planet_size<span class="pl-pds">'</span></span>,planet_sizes)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="like" class="anchor" href="#like" aria-hidden="true"><span class="octicon octicon-link"></span></a>LIKE</h3>
+
+<p>This SQL command is used to find close matches where as the "WHERE" command is for precise matches. This is useful for doing searches.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field/filters</td>
+<td align="left">String/Object</td>
+<td align="left">Required</td>
+<td align="left">Field name or object of field/match pairs</td>
+</tr>
+<tr>
+<td align="left">value</td>
+<td align="left">String/Number</td>
+<td align="left">Required</td>
+<td align="left">The value you want the field to closely match</td>
+</tr>
+<tr>
+<td align="left">side</td>
+<td align="left">String</td>
+<td align="left">'both'</td>
+<td align="left">before: '%value'; after: 'value%', both: '%value%'</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>NOTE:</strong> You can, alternatively, use <code>'right'</code> and <code>'left'</code> in place of <code>'before'</code> and '<code>after</code>' if you prefer.</p>
+
+<h4>
+<a id="likefieldmatchside" class="anchor" href="#likefieldmatchside" aria-hidden="true"><span class="octicon octicon-link"></span></a>.like(field,match[,side])</h4>
+
+<p>All fields are escaped automatically, no exceptions. Multiple calls will be joined together with 'AND'. You can also pass an object of field/match pairs. Wildcard sides are interchangeable between before/left and after/right--choose the one that makes the most sense to you (there are examples of each below).</p>
+
+<p><strong>Examples</strong></p>
+
+<p>By default, the match string will be wrapped on both sides with the wildcard (%):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` WHERE `first_name` LIKE '%mber%'</span>
+<span class="pl-c">// Potential results: [{first_name: 'Kimberly'},{first_name: 'Amber'}]</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>).like(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>mber<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can specify a side to place the wildcard (%) on if you'd like (before/left, after/right, both):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` WHERE `first_name` LIKE '%mber'</span>
+<span class="pl-c">// Potential results: [{first_name: 'Amber'}]</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>).like(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>mber<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>before<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);
+
+<span class="pl-c">// SELECT `first_name` FROM `users` WHERE `first_name` LIKE 'Kim%'</span>
+<span class="pl-c">// Potential results: [{first_name: 'Kim'},{first_name: 'Kimberly'}]</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>).like(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Kim<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>right<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can also pass 'none' if you don't want to use the wildcard (%)</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` WHERE `first_name` LIKE 'kim'</span>
+<span class="pl-c">// Potential results: [{first_name: 'Kim'}]</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>).like(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>kim<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>none<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>If you'd like to have multiple like clauses, you can do that by calling like multiple times:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` </span>
+<span class="pl-c">// WHERE `first_name` LIKE 'Kim%'</span>
+<span class="pl-c">// AND `middle_name` LIKE '%lyt%'</span>
+<span class="pl-c">// AND `last_name` LIKE '%arris'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>)
+    .like(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Kim<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>right<span class="pl-pds">'</span></span>)
+    .like(<span class="pl-s1"><span class="pl-pds">'</span>middle_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>lyt<span class="pl-pds">'</span></span>)
+    .like(<span class="pl-s1"><span class="pl-pds">'</span>last_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>arris<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>left<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Or you can do it with an object of field/match pairs. If you want to pass a wildcard side, provide <code>null</code> as the second paramter and the side as the third. <strong>Note</strong>: All <code>match</code> values in an object will share the same wildcard side.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` </span>
+<span class="pl-c">// WHERE `first_name` LIKE '%ly'</span>
+<span class="pl-c">// AND `middle_name` LIKE '%the'</span>
+<span class="pl-c">// AND `last_name` LIKE '%is'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>)
+    .like({first_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>ly<span class="pl-pds">'</span></span>, middle_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>the<span class="pl-pds">'</span></span>, last_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>is<span class="pl-pds">'</span></span>}, <span class="pl-c1">null</span>, <span class="pl-s1"><span class="pl-pds">'</span>before<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="or_like"></a></p>
+
+<h4>
+<a id="or_likefieldmatchside" class="anchor" href="#or_likefieldmatchside" aria-hidden="true"><span class="octicon octicon-link"></span></a>.or_like(field,match[,side])</h4>
+
+<p>This is exactly the same as the <code>.like()</code> method except that the clauses are joined by 'OR' not 'AND'.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` </span>
+<span class="pl-c">// WHERE `first_name` LIKE 'Kim%'</span>
+<span class="pl-c">// OR `middle_name` LIKE '%lyt%'</span>
+<span class="pl-c">// OR `last_name` LIKE '%arris'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>)
+    .or_like(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>Kim<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>right<span class="pl-pds">'</span></span>)
+    .or_like(<span class="pl-s1"><span class="pl-pds">'</span>middle_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>lyt<span class="pl-pds">'</span></span>)
+    .or_like(<span class="pl-s1"><span class="pl-pds">'</span>last_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>arris<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>left<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="not_like"></a></p>
+
+<h4>
+<a id="not_likefieldmatchside" class="anchor" href="#not_likefieldmatchside" aria-hidden="true"><span class="octicon octicon-link"></span></a>.not_like(field,match[,side])</h4>
+
+<p>This is exactly the same as the <code>.like()</code> method except that it creates "NOT LIKE" statements.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` </span>
+<span class="pl-c">// WHERE `first_name` NOT LIKE 'A%'</span>
+<span class="pl-c">// AND `middle_name` NOT LIKE 'B%'</span>
+<span class="pl-c">// AND `last_name` NOT LIKE 'C%'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>)
+    .not_like({first_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>A<span class="pl-pds">'</span></span>, middle_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>B<span class="pl-pds">'</span></span>, last_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>C<span class="pl-pds">'</span></span>}, <span class="pl-c1">null</span>, <span class="pl-s1"><span class="pl-pds">'</span>after<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="or_not_like"></a></p>
+
+<h4>
+<a id="or_not_likefieldmatchside" class="anchor" href="#or_not_likefieldmatchside" aria-hidden="true"><span class="octicon octicon-link"></span></a>.or_not_like(field,match[,side])</h4>
+
+<p>This is exactly the same as the <code>.not_like()</code> method except that the clauses are joined by 'OR' not 'AND'.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT `first_name` FROM `users` </span>
+<span class="pl-c">// WHERE `first_name` NOT LIKE 'A%'</span>
+<span class="pl-c">// OR `middle_name` NOT LIKE 'B%'</span>
+<span class="pl-c">// OR `last_name` NOT LIKE 'C%'</span>
+qb.<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>)
+    .or_not_like({first_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>A<span class="pl-pds">'</span></span>, middle_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>B<span class="pl-pds">'</span></span>, last_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>C<span class="pl-pds">'</span></span>}, <span class="pl-c1">null</span>, <span class="pl-s1"><span class="pl-pds">'</span>after<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="group-by" class="anchor" href="#group-by" aria-hidden="true"><span class="octicon octicon-link"></span></a>GROUP BY</h3>
+
+<h4>
+<a id="group_byfields" class="anchor" href="#group_byfields" aria-hidden="true"><span class="octicon octicon-link"></span></a>.group_by(fields)</h4>
+
+<p>This SQL command allows you to get the first (depending on ORDER) result of a group of results related by a shared value or values.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field(s)</td>
+<td align="left">String/Object</td>
+<td align="left">Required</td>
+<td align="left">Field name or array of field names</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples</strong></p>
+
+<p>Group by a single field:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `users` GROUP BY `department_id`</span>
+qb.group_by(<span class="pl-s1"><span class="pl-pds">'</span>department_id<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Group by multiple fields:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `users` GROUP BY `department_id`, `position_id`</span>
+qb.group_by([<span class="pl-s1"><span class="pl-pds">'</span>department_id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>position_id<span class="pl-pds">'</span></span>]).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="having" class="anchor" href="#having" aria-hidden="true"><span class="octicon octicon-link"></span></a>HAVING</h3>
+
+<h4>
+<a id="havingfieldvalue" class="anchor" href="#havingfieldvalue" aria-hidden="true"><span class="octicon octicon-link"></span></a>.having(field,value)</h4>
+
+<p>This SQL command is similar to the 'WHERE' command but is used when aggregate functions are used in the "SELECT" portion of the query.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">field/filters</td>
+<td align="left">String/Object</td>
+<td align="left">Required</td>
+<td align="left">Field name or object of field/value pairs to filter on</td>
+</tr>
+<tr>
+<td align="left">value</td>
+<td align="left">Mixed</td>
+<td align="left">NULL</td>
+<td align="left">Value to filter by</td>
+</tr>
+<tr>
+<td align="left">escape</td>
+<td align="left">Boolean</td>
+<td align="left">true</td>
+<td align="left">TRUE: Escape fields and values; FALSE: Don't escape.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method works exactly the same way as the <code>.where()</code> method works with the exception of the fact that there is no 'HAVING' equivalent to 'WHERE IN'. See the <a href="#where">.where()</a> documentation if you need additional information.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>If you just want to add a single having clause:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT COUNT(*) AS `num_planets` FROM `star_systems` </span>
+<span class="pl-c">// GROUP BY `id`</span>
+<span class="pl-c">// HAVING `num_planets` = 5</span>
+qb.group_by(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>).having(<span class="pl-s1"><span class="pl-pds">'</span>num_planets<span class="pl-pds">'</span></span>,<span class="pl-c1">5</span>).count(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>If you need more complex filtering using different operators (<code>&lt;, &gt;, &lt;=, =&gt;, !=, &lt;&gt;, etc...</code>), you can simply provide that operator along with the key in the first parameter. The '=' is assumed if a custom operator is not passed:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT COUNT(*) AS `num_planets` FROM `star_systems` </span>
+<span class="pl-c">// GROUP BY `id`</span>
+<span class="pl-c">// HAVING `num_planets` &gt; 5</span>
+qb.group_by(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>).having(<span class="pl-s1"><span class="pl-pds">'</span>num_planets &gt;<span class="pl-pds">'</span></span>,<span class="pl-c1">5</span>).count(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can conveniently pass an object of key:value pairs (which can also contain custom operators):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT COUNT(*) AS `num_planets` FROM `star_systems` </span>
+<span class="pl-c">// GROUP BY `id`</span>
+<span class="pl-c">// HAVING `num_planets` &gt; 5</span>
+qb.group_by(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>).having({<span class="pl-s1"><span class="pl-pds">'</span>num_planets &gt;<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">5</span>}).count(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can construct complex WHERE clauses manually and they will be escaped properly. <em>Please, for custom clauses containing subqueries, make sure you escape everything properly!</em> <strong><em>ALSO NOTE:</em></strong> with this method, there may be conflicts between database drivers!</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT COUNT(*) AS `num_planets` FROM `star_systems` </span>
+<span class="pl-c">// GROUP BY `id`</span>
+<span class="pl-c">// HAVING `num_planets` &gt; (5+2)</span>
+qb.group_by(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>).having(<span class="pl-s1"><span class="pl-pds">"</span>`num_planets` &gt; (5+2)<span class="pl-pds">"</span></span>,<span class="pl-c1">null</span>,<span class="pl-c1">false</span>).count(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p><a name="or_having"></a></p>
+
+<h4>
+<a id="or_havingfieldvalueescape" class="anchor" href="#or_havingfieldvalueescape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.or_having(field[,value[,escape]])</h4>
+
+<p>This method functions identically to <a href="#having">.having()</a> except that it joins clauses with 'OR' instead of 'AND'.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT SUM(planets) AS `num_planets`, SUM(moons) AS `num_moons` FROM `star_systems` </span>
+<span class="pl-c">// GROUP BY `id`</span>
+<span class="pl-c">// HAVING `num_planets` &gt;= 5 OR `num_moons` &lt;= 10</span>
+qb.group_by(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>)
+    .having(<span class="pl-s1"><span class="pl-pds">'</span>num_planets &gt;=<span class="pl-pds">'</span></span>,<span class="pl-c1">5</span>)
+    .or_having(<span class="pl-s1"><span class="pl-pds">'</span>num_moons &lt;=<span class="pl-pds">'</span></span>, <span class="pl-c1">10</span>)
+    .count(<span class="pl-s1"><span class="pl-pds">'</span>star_systems<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="order-by" class="anchor" href="#order-by" aria-hidden="true"><span class="octicon octicon-link"></span></a>ORDER BY</h3>
+
+<h4>
+<a id="order_byfielddirection" class="anchor" href="#order_byfielddirection" aria-hidden="true"><span class="octicon octicon-link"></span></a>.order_by(field[,direction])</h4>
+
+<p>This SQL command is used to order the resultset by a field or fields in descending, ascending, or random order(s).</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">fields</td>
+<td align="left">String/Array</td>
+<td align="left">Required</td>
+<td align="left">Field name or an array of field names, possibly with directions as well</td>
+</tr>
+<tr>
+<td align="left">direction</td>
+<td align="left">String</td>
+<td align="left">'asc'</td>
+<td align="left">'asc': Ascending; 'desc': Descending; 'rand'/'random'/'rand()': Random.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This is a very flexible method, offerring a wide variety of ways you can call it. Variations include:</p>
+
+<ul>
+<li>Pass the field name and ommit the direction</li>
+<li>Pass the field name and the direction as the first and second parameters, respectively (most common)</li>
+<li>Pass an array of fields to first paramter, direction to second parameter.</li>
+<li>Pass an array of fields + directions in first parameter and ommit the second one.</li>
+<li>Pass an array of fields (+ directions for some to override second parameter) to first paramter, direction to second parameter.</li>
+<li>Pass a raw comma-seperated string of field + directions in first parameter and ommit the second one.</li>
+</ul>
+
+<p><strong>Examples</strong></p>
+
+<p>Pass the field name and ommit the direction</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` ORDER BY `galaxy_name` ASC</span>
+qb.order_by(<span class="pl-s1"><span class="pl-pds">'</span>galaxy_name<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Pass the field name and the direction as the first and second parameters, respectively</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` ORDER BY `galaxy_name` DESC</span>
+qb.order_by(<span class="pl-s1"><span class="pl-pds">'</span>galaxy_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>desc<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Pass an array of fields to first paramter, direction to second parameter</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` ORDER BY `galaxy_name` DESC, `galaxy_size` DESC</span>
+qb.order_by([<span class="pl-s1"><span class="pl-pds">'</span>galaxy_name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>galaxy_size<span class="pl-pds">'</span></span>],<span class="pl-s1"><span class="pl-pds">'</span>desc<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Pass an array of fields + directions in first parameter and ommit the second one.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` ORDER BY `galaxy_name` DESC, `galaxy_size` ASC</span>
+qb.order_by([<span class="pl-s1"><span class="pl-pds">'</span>galaxy_name desc<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>galaxy_size asc<span class="pl-pds">'</span></span>]).get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Pass an array of fields (+ directions for some to override second parameter) to first paramter, direction to second parameter</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` ORDER BY `galaxy_name` DESC, `galaxy_size` ASC</span>
+qb.order_by([<span class="pl-s1"><span class="pl-pds">'</span>galaxy_name desc<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>galaxy_size<span class="pl-pds">'</span></span>],<span class="pl-s1"><span class="pl-pds">'</span>asc<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>Pass a raw comma-seperated string of field + directions in first parameter and ommit the second one.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` ORDER BY `galaxy_name` ASC, `galaxy_size` DESC</span>
+qb.order_by(<span class="pl-s1"><span class="pl-pds">'</span>galaxy_name asc, galaxy_size desc<span class="pl-pds">'</span></span>).get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="limit" class="anchor" href="#limit" aria-hidden="true"><span class="octicon octicon-link"></span></a>LIMIT</h3>
+
+<h4>
+<a id="limitlimit_tooffset" class="anchor" href="#limitlimit_tooffset" aria-hidden="true"><span class="octicon octicon-link"></span></a>.limit(limit_to,offset)</h4>
+
+<p>This SQL command is used to limit a result set to a maximum number of results, regardless of the actual number of results that might be returned by a non-limited query.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">limit_to</td>
+<td align="left">Integer</td>
+<td align="left">Required</td>
+<td align="left">The maximum number of results you want from the query</td>
+</tr>
+<tr>
+<td align="left">offset</td>
+<td align="left">Integer</td>
+<td align="left">NULL</td>
+<td align="left">Optional offset value (where to start before limiting)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `users` LIMIT 5</span>
+qb.limit(<span class="pl-c1">5</span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<p>You can provide an option offset value instead of calling <a href="#offset">.offset()</a> seperately:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `users` LIMIT 5, 5</span>
+qb.limit(<span class="pl-c1">5</span>,<span class="pl-c1">5</span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="offset" class="anchor" href="#offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>OFFSET</h3>
+
+<h4>
+<a id="offsetoffset" class="anchor" href="#offsetoffset" aria-hidden="true"><span class="octicon octicon-link"></span></a>.offset(offset)</h4>
+
+<p>This SQL command is tell the "LIMIT" where to start grabbing data. If cannot be used without a limit having been set first.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">offset</td>
+<td align="left">Integer</td>
+<td align="left">NULL</td>
+<td align="left">where to start before limiting</td>
+</tr>
+</tbody>
+</table>
+
+<p>The practical uses of this method are probably miniscule since the <code>.limit()</code> method must be called in order to use it and the limit method provides a means by which to set the offset. In any case, the method is very simple: pass the result row index that you want to start from when limiting. This is most useful for pagination of search results and similar scenarios.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `users` LIMIT 5, 25</span>
+qb.limit(<span class="pl-c1">5</span>).offset(<span class="pl-c1">25</span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,callback);</pre></div>
+
+<hr>
+
+<h3>
+<a id="set" class="anchor" href="#set" aria-hidden="true"><span class="octicon octicon-link"></span></a>SET</h3>
+
+<h4>
+<a id="setkey-value-escape" class="anchor" href="#setkey-value-escape" aria-hidden="true"><span class="octicon octicon-link"></span></a>.set(key[, value[, escape]])</h4>
+
+<p>This SQL is used to set values to fields when utilizing the <code>update</code>, and <code>insert</code> methods. More than likely, you will choose use the shorthand notation provided by the aforementioned methods, but, this can be handy in some cases.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">key</td>
+<td align="left">String/Object</td>
+<td align="left">Required</td>
+<td align="left">The key of field to be set or an object of key:value pairs</td>
+</tr>
+<tr>
+<td align="left">value</td>
+<td align="left">Mixed</td>
+<td align="left">NULL</td>
+<td align="left">Required if <code>key</code> is a string. Pass NULL if <code>key</code> is an object and you'd like to use the 3rd parameter</td>
+</tr>
+<tr>
+<td align="left">escape</td>
+<td align="left">String/Object</td>
+<td align="left">true</td>
+<td align="left">If false, keys and values will not be escaped.</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Examples</strong></p>
+
+<p>Basic single seting of a value</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// UPDATE `users` SET `birthday` = '2015-02-04'</span>
+qb.set(<span class="pl-s1"><span class="pl-pds">'</span>birthday<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>2015-02-04<span class="pl-pds">'</span></span>).update(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, callback);</pre></div>
+
+<p>Set multiple keys and values at once</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> birthday <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Date</span>(<span class="pl-c1">1986</span>, <span class="pl-c1">7</span>, <span class="pl-c1">5</span>, <span class="pl-c1">8</span>, <span class="pl-c1">15</span>, <span class="pl-c1">23</span>);
+<span class="pl-c">// UPDATE `users` SET `birthday` = '2015-02-04', `anniversary` = '2010-05-15'</span>
+qb.set({birthday<span class="pl-k">:</span> birthday, anniversary<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>2010-05-15<span class="pl-pds">'</span></span>}).update(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, callback);</pre></div>
+
+<hr>
+
+<h2>
+<a id="execution-methods" class="anchor" href="#execution-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Execution Methods</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left">API Method</th>
+<th align="left">SQL Command</th>
+<th align="center">MySQL</th>
+<th align="center">MSSQL</th>
+<th align="center">Oracle</th>
+<th align="center">SQLite</th>
+<th align="center">Postgres</th>
+<th align="center">Mongo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#query">query()</a></td>
+<td align="left">N/A</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#get">get()</a></td>
+<td align="left">N/A</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#get_where">get_where()</a></td>
+<td align="left">N/A</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#count">count()</a></td>
+<td align="left">COUNT</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#update">update()</a></td>
+<td align="left">UPDATE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#update_batch">update_batch()</a></td>
+<td align="left">N/A</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#insert">insert()</a></td>
+<td align="left">INSERT</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#insert_batch">insert_batch()</a></td>
+<td align="left">N/A</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#insert-ignore">insert_ignore()</a></td>
+<td align="left">INSERT IGNORE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#delete">delete()</a></td>
+<td align="left">DELETE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#truncate">truncate()</a></td>
+<td align="left">TRUNCATE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#empty_table">empty_table()</a></td>
+<td align="left">DELETE</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="what-are-execution-methods" class="anchor" href="#what-are-execution-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>What are "Execution Methods"??</h3>
+
+<p>Execution methods are the end-of-chain methods in the QueryBuilder library. Once these methods are called, all the chainable methods you've called up until this point will be compiled into a query string and sent to the driver's <code>query()</code> method. At this point, the QueryBuilder will be reset and ready to build a new query. The database driver will respond with results depending on the type of query being executed or with an error message. Both (if provided) will be supplied to the callback function.</p>
+
+<h3>
+<a id="handling-error-messages-and-results" class="anchor" href="#handling-error-messages-and-results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handling Error Messages and Results</h3>
+
+<p>The final parameter of every execution method will be a callback function. For <code>single</code> connection setups, the parameters for the callback are in the <code>node.js</code> standard <code>(err, response)</code> format. If the driver throws an error, a javascript <code>Standard Error</code> object will be passed into the <code>err</code> parameter. The <code>response</code> parameter can be supplied with an array of result rows (<code>.get()</code> &amp; <code>.get_where()</code>), an integer (<code>.count()</code>), or a response object containing rows effected, last insert id, etc... in any other scenario.</p>
+
+<h3>
+<a id="response-format-examples" class="anchor" href="#response-format-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Response Format Examples</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">API Method(s)</th>
+<th align="left">Response Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">get(), get_where()</td>
+<td align="left"><code>[{field:value,field2:value2},{field:value, field2:value2}]</code></td>
+</tr>
+<tr>
+<td align="left">count()</td>
+<td align="left">Integer (ex. <code>578</code>)</td>
+</tr>
+<tr>
+<td align="left">insert(), update(), delete()</td>
+<td align="left">Example: <code>{insert_id: 579, affected_rows: 1, changed_rows: 0 [,and others per DB driver]}</code>
+</td>
+</tr>
+<tr>
+<td align="left">insert_batch(), update_batch()</td>
+<td align="left">Example: <code>{insert_id: 579, affected_rows: 1, changed_rows: 0 [,and others per DB driver]}</code>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="callback-example" class="anchor" href="#callback-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Callback Example</h4>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> <span class="pl-en">callback</span> <span class="pl-k">=</span>  <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">response</span>) {
+    qb.release();
+    <span class="pl-k">if</span> (err) {
+        <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+    }
+    <span class="pl-k">else</span> {
+        <span class="pl-k">for</span> (<span class="pl-s">var</span> i <span class="pl-k">in</span> response) {
+            <span class="pl-s">var</span> row <span class="pl-k">=</span> response[i];
+            <span class="pl-c">/*</span>
+<span class="pl-c">                Do something with each row...</span>
+<span class="pl-c">            */</span>
+        }
+    }
+};
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.get(<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,callback);
+});</pre></div>
+
+<h4>
+<a id="using-the-same-connection-pool-connection-for-successive-calls" class="anchor" href="#using-the-same-connection-pool-connection-for-successive-calls" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the Same Connection Pool Connection for Successive Calls</h4>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings,<span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> data <span class="pl-k">=</span> {username<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>jsmith<span class="pl-pds">'</span></span>, first_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>John<span class="pl-pds">'</span></span>, last_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Smith<span class="pl-pds">'</span></span>};
+
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.insert(<span class="pl-s1"><span class="pl-pds">'</span>employees<span class="pl-pds">'</span></span>, data, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        <span class="pl-k">if</span> (err) {
+            <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+        }
+        <span class="pl-k">else</span> {
+            <span class="pl-k">if</span> (res.affected_rows <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+                <span class="pl-s">var</span> insert_id <span class="pl-k">=</span> res.insert_id;
+                qb.get_where(<span class="pl-s1"><span class="pl-pds">'</span>employees<span class="pl-pds">'</span></span>, {id<span class="pl-k">:</span> insert_id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+                    qb.release();
+                    <span class="pl-en">console</span>.<span class="pl-sc">dir</span>(res);
+                });
+            }
+            <span class="pl-k">else</span> {
+                <span class="pl-en">console</span><span class="pl-s3">.error</span>(<span class="pl-s1"><span class="pl-pds">"</span>New user was not added to database!<span class="pl-pds">"</span></span>);
+            }
+        }
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="query"></a></p>
+
+<h3>
+<a id="queryquery_stringcallback" class="anchor" href="#queryquery_stringcallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.query(query_string,callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">query_string</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">Query to send directly to your database driver</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded</td>
+</tr>
+</tbody>
+</table>
+
+<p>**<strong><em>This method bypasses the entire QueryBuilder portion of this module</em></strong>** is simply uses your database driver's native querying method. You should be cautious when using this as none of this module's security and escaping functionality will be utilized.</p>
+
+<p>There are scenarios when using this method may be required; for instance, if you need to run a very specific type of command on your database that is not typical of a standard, CRUD-type query (ex. user permissions or creating a view).</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> sql <span class="pl-k">=</span> qb.<span class="pl-s3">select</span>([<span class="pl-s1"><span class="pl-pds">'</span>f.foo<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b.bar<span class="pl-pds">'</span></span>])
+    .from(<span class="pl-s1"><span class="pl-pds">'</span>foo f<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>bar b<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b.foo_id=f.id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>left<span class="pl-pds">'</span></span>)
+    .get_compiled_select();
+qb.query(<span class="pl-s1"><span class="pl-pds">"</span>CREATE VIEW `foobar` AS <span class="pl-pds">"</span></span> <span class="pl-k">+</span> sql, callback);</pre></div>
+
+<hr>
+
+<p><a name="get"></a></p>
+
+<h3>
+<a id="gettablecallback" class="anchor" href="#gettablecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get([table,]callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">undefined</td>
+<td align="left">(optional) Used to avoid having to call <code>.from()</code> seperately.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is used when running queries that might respond with rows of data (namely, "SELECT" statements...). You can pass a table name as the first parameter to avoid having to call <a href="#from">.from()</a> seperately. If the table name is omitted, and the first paramter is a callback function, there will be no need to pass a callback function into the second parameter.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Array of rows</p>
+
+<p><strong>Examples</strong></p>
+
+<p>If you want to provide a table name into the first parameter:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies`</span>
+qb.get(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>, callback);</pre></div>
+
+<p>If you already have the table added to the query:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies`</span>
+qb.from(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>).get(callback);</pre></div>
+
+<p>Just a more-complicated example for the sake of it (note: using connection pool):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">/**</span>
+<span class="pl-c"> * SELECT </span>
+<span class="pl-c"> *  `g`.`name`, </span>
+<span class="pl-c"> *  `g`.`diameter`,</span>
+<span class="pl-c"> *  `g`.`type_id`, </span>
+<span class="pl-c"> *  `gt`.`name` AS `type`, </span>
+<span class="pl-c"> *  COUNT(`s`.`id`) as `num_stars`</span>
+<span class="pl-c"> * FROM `galaxies` `g`</span>
+<span class="pl-c"> * LEFT JOIN `galaxy_types` `gt` ON `gt`.`id`=`g`.`type_id`</span>
+<span class="pl-c"> * LEFT JOIN `stars` `s` ON `s`.`galaxy_id`=`g`.`id`</span>
+<span class="pl-c"> * GROUP BY `g`.`id`</span>
+<span class="pl-c"> * ORDER BY `g`.`name` ASC </span>
+<span class="pl-c"> * LIMIT 10</span>
+<span class="pl-c"> **/</span>
+qb.limit(<span class="pl-c1">10</span>)
+    .<span class="pl-s3">select</span>([<span class="pl-s1"><span class="pl-pds">'</span>g.name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>g.diameter<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>gt.name as type<span class="pl-pds">'</span></span>])
+    .<span class="pl-s3">select</span>(<span class="pl-s1"><span class="pl-pds">'</span>COUNT(`s`.`id`) as `num_stars`<span class="pl-pds">'</span></span>,<span class="pl-c1">null</span>,<span class="pl-c1">false</span>)
+    .from(<span class="pl-s1"><span class="pl-pds">'</span>galaxies g<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>galaxy_types gt<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>gt.id=g.type_id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>left<span class="pl-pds">'</span></span>)
+    .<span class="pl-s3">join</span>(<span class="pl-s1"><span class="pl-pds">'</span>stars s<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>s.galaxy_id=g.id<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>left<span class="pl-pds">'</span></span>)
+    .group_by(<span class="pl-s1"><span class="pl-pds">'</span>g.id<span class="pl-pds">'</span></span>)
+    .order_by(<span class="pl-s1"><span class="pl-pds">'</span>g.name<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>asc<span class="pl-pds">'</span></span>)
+    .get(<span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">response</span>, <span class="pl-vpf">conn</span>) {
+        conn.release();
+        <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+
+        <span class="pl-k">for</span> (<span class="pl-s">var</span> i <span class="pl-k">in</span> response) {
+            <span class="pl-s">var</span> row <span class="pl-k">=</span> response[i];
+            <span class="pl-en">console</span><span class="pl-s3">.log</span>(<span class="pl-s1"><span class="pl-pds">"</span>The <span class="pl-pds">"</span></span> <span class="pl-k">+</span> row.<span class="pl-sc">name</span> <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> is a <span class="pl-pds">"</span></span> <span class="pl-k">+</span> row.diameter 
+                <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> lightyear-wide <span class="pl-pds">"</span></span> <span class="pl-k">+</span> row.<span class="pl-sc">type</span> <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> galaxy with <span class="pl-pds">"</span></span> 
+                <span class="pl-k">+</span> row.num_stars <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> stars.<span class="pl-pds">"</span></span>);
+        }
+    });</pre></div>
+
+<hr>
+
+<p><a name="get_where"></a></p>
+
+<h3>
+<a id="get_wheretablewherecallback" class="anchor" href="#get_wheretablewherecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get_where(table,where,callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String or Array</td>
+<td align="left">Required</td>
+<td align="left">Used to avoid having to call <code>.from()</code> seperately.</td>
+</tr>
+<tr>
+<td align="left">where</td>
+<td align="left">Object</td>
+<td align="left">Required</td>
+<td align="left">Used to avoid having to call <code>.where()</code> seperately</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is basically the same as the <code>.get()</code> method except that if offers an additional shortcut parameter to provide a list of filters (<code>{field_name:value}</code>)  to limit the results by (effectively a shortcut to avoid calling <code>.where()</code> seperately).  The other difference is that <em>all</em> parameters are required and they must be in the proper order.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Array of objects representing the result rows.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>Basic example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` WHERE `num_stars` &gt; 100000000</span>
+qb.get_where(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>, {<span class="pl-s1"><span class="pl-pds">'</span>num_stars &gt;<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">100000000</span>}, callback);</pre></div>
+
+<p>You can still provide other where statements if you want—they'll all work hapilly together:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT * FROM `galaxies` WHERE `num_stars` &gt; 100000000 AND `galaxy_type_id` = 3</span>
+qb.where(<span class="pl-s1"><span class="pl-pds">'</span>num_stars &gt;<span class="pl-pds">'</span></span>, <span class="pl-c1">100000000</span>).get_where(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>, {galaxy_type_id<span class="pl-k">:</span> <span class="pl-c1">3</span>}, callback);</pre></div>
+
+<hr>
+
+<p><a name="count"></a></p>
+
+<h3>
+<a id="counttablecallback" class="anchor" href="#counttablecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.count([table,]callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">undefined</td>
+<td align="left">(optional) Used to avoid having to call <code>.from()</code> seperately.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is used to determine the total number of results that a query would return without actually returning the entire resultset back to this module. Obviously, you could simply execute the same query with <code>.get()</code> and then check the <code>length</code> property of the response array, but, that would take significantly more time and memory for very large resultsets.</p>
+
+<p>The field in the resultset will always labeled be 'numrows'.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Integer</p>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// SELECT COUNT(*) AS `numrows` FROM `galaxies` WHERE `type` = 3</span>
+<span class="pl-s">var</span> type <span class="pl-k">=</span> <span class="pl-c1">3</span>;
+qb.where(<span class="pl-s1"><span class="pl-pds">'</span>type<span class="pl-pds">'</span></span>,type).count(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">count</span>) {
+    <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+    <span class="pl-en">console</span><span class="pl-s3">.log</span>(<span class="pl-s1"><span class="pl-pds">"</span>There are <span class="pl-pds">"</span></span> <span class="pl-k">+</span> numrows <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> Type <span class="pl-pds">"</span></span> <span class="pl-k">+</span> type <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> galaxies in the Universe.<span class="pl-pds">"</span></span>);
+});</pre></div>
+
+<hr>
+
+<p><a name="update"></a></p>
+
+<h3>
+<a id="updatetabledatawherecallback" class="anchor" href="#updatetabledatawherecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.update(table,data[,where],callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">null</td>
+<td align="left">(suggested) The table/collection you'd like to update</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">Object</td>
+<td align="left">null</td>
+<td align="left">(suggested) The data to update (ex. <code>{field: value}</code>)</td>
+</tr>
+<tr>
+<td align="left">where</td>
+<td align="left">Object</td>
+<td align="left">null</td>
+<td align="left">(optional) Used to avoid having to call <code>.where()</code> seperately. Pass NULL if you don't want to use it.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is used to update a table (SQL) or collection (NoSQL) with new data. All identifiers and values are escaped automatically when applicable. The response parameter of the callback should receive a response object with information like the number of records updated, and the number of changed rows...</p>
+
+<p><strong>NOTE:</strong></p>
+
+<p>The first and second parameters are not required but I do suggest you use them as your code will be much easier to read. If you choose not to use them, you will need to pass a falsy value to each... you can't simply skip them. My recommendation is to use <code>null</code>. The way you would supply these values without using this method would be through the <code>from()</code> method for the first paramater and the <code>set()</code> method for the second paramter.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the results of the query.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>Here's a contrived example of how it might be used in an app made with the Express framework:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> express <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> app <span class="pl-k">=</span> express();
+<span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+app.post(<span class="pl-s1"><span class="pl-pds">'</span>/update_account<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">req</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-s">var</span> user_id <span class="pl-k">=</span> req.session.user_id;
+    <span class="pl-s">var</span> <span class="pl-en">sanitize_name</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vpf">name</span>) { <span class="pl-k">return</span> name.<span class="pl-s3">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-c1">[<span class="pl-k">^</span><span class="pl-c1">A-Za-z0-9</span><span class="pl-c1">\s</span>'-]</span><span class="pl-k">+</span><span class="pl-k">$</span><span class="pl-pds">/</span></span>,<span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>).trim(); };
+    <span class="pl-s">var</span> <span class="pl-en">sanitize_age</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vpf">age</span>)  { <span class="pl-k">return</span> age.<span class="pl-s3">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-c1">[<span class="pl-k">^</span><span class="pl-c1">0-9</span>]</span><span class="pl-k">+</span><span class="pl-k">$</span><span class="pl-pds">/</span></span>,<span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>).trim(); };
+
+    <span class="pl-s">var</span> data <span class="pl-k">=</span> {
+        first_name<span class="pl-k">:</span> sanitize_name(req.<span class="pl-sc">body</span>.first_name),
+        last_name<span class="pl-k">:</span> sanitize_name(req.<span class="pl-sc">body</span>.last_name),
+        age<span class="pl-k">:</span> sanitize_age(req.<span class="pl-sc">body</span>.last_name),
+        bio<span class="pl-k">:</span> req.<span class="pl-sc">body</span>.bio,
+    };
+
+    pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+        qb.update(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, data, {id<span class="pl-k">:</span>user_id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+            qb.release();
+            <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+
+            <span class="pl-s">var</span> page_data <span class="pl-k">=</span> {
+                prefill<span class="pl-k">:</span> data,
+            }
+            <span class="pl-k">return</span> res.render(<span class="pl-s1"><span class="pl-pds">'</span>/account_updated<span class="pl-pds">'</span></span>, page_data);
+        });
+    });
+});</pre></div>
+
+<p>Here's another (more-direct) example where one decided to supply the table, data, and filters through alternative methods:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>single<span class="pl-pds">'</span></span>);
+qb.where(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>, <span class="pl-c1">42</span>)
+    .from(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>)
+    .set(<span class="pl-s1"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>email@domain.net<span class="pl-pds">'</span></span>)
+    .update(<span class="pl-c1">null</span>, <span class="pl-c1">null</span>, <span class="pl-c1">null</span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+        <span class="pl-en">console</span><span class="pl-s3">.log</span>(<span class="pl-s1"><span class="pl-pds">"</span>Updated: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> res.affected_rows <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> rows);</span>
+<span class="pl-s1">    });</span></pre></div>
+
+<hr>
+
+<p><a name="update_batch"></a></p>
+
+<h3>
+<a id="update_batchtabledatasetindexwherecallback" class="anchor" href="#update_batchtabledatasetindexwherecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.update_batch(table,dataset,index[,where],callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to insert into</td>
+</tr>
+<tr>
+<td align="left">dataset</td>
+<td align="left">Array</td>
+<td align="left">Required</td>
+<td align="left">An array of data (rows) to update (ex. <code>[{id: 3, field: value}, {id: 4, field: val}]</code>)</td>
+</tr>
+<tr>
+<td align="left">index</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">Name of the key in each data object that represents a <code>where</code> clause.</td>
+</tr>
+<tr>
+<td align="left">where</td>
+<td align="left">Object</td>
+<td align="left">NULL</td>
+<td align="left">(optional) Used to avoid having to call <code>.where()</code> seperately. Pass NULL if you don't want to use it.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is a somewhat-complex one and, when using transactional databases, a bit pointless. Nevertheless, this will allow you to update a batch of rows with one query which, in theory, should be faster than running multiple update queries.</p>
+
+<p>The important thing to understand is that there are, essentially, <em>two</em> <code>where</code> clause portions with this method: a local one, and a global one. The <code>index</code> you specify in the 3rd parameter represents the name of the key in each data object of the dataset that will act as the local <code>where</code> clause for that particular row to be updated. That row, however, will only be updated if the global where clause(s) (4th param) have been satisfied as well.</p>
+
+<p><strong>NOTE:</strong> This method will create batches of up to 100 rows at a time. So, if you have 250 rows to update, this will make 3 queries to your database.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span>  <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>single<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// The key to use as the local where clause</span>
+<span class="pl-s">var</span> key <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>;
+
+<span class="pl-c">// All objects in this dataset must have an id key</span>
+<span class="pl-s">var</span> dataset <span class="pl-k">=</span> [
+    {id<span class="pl-k">:</span> <span class="pl-c1">4569</span>, name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Cartwheel<span class="pl-pds">'</span></span>, constellation<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Sculptor<span class="pl-pds">'</span></span>},
+    {id<span class="pl-k">:</span> <span class="pl-c1">5631</span>, name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Black Eye<span class="pl-pds">'</span></span>, constellation<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Coma Berenices<span class="pl-pds">'</span></span>},
+    {id<span class="pl-k">:</span> <span class="pl-c1">1238</span>, name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Sombrero<span class="pl-pds">'</span></span>,  constellation<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Virgo<span class="pl-pds">'</span></span>}
+];
+
+<span class="pl-s">var</span> where <span class="pl-k">=</span> {<span class="pl-s1"><span class="pl-pds">'</span>last_updated &lt;<span class="pl-pds">'</span></span> <span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>2015-01-01<span class="pl-pds">'</span></span>}
+
+qb.update_batch(<span class="pl-s1"><span class="pl-pds">'</span>galaxies<span class="pl-pds">'</span></span>, dataset, key, where, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+
+    <span class="pl-c">/* </span>
+<span class="pl-c">     * UPDATE `galaxies` </span>
+<span class="pl-c">     * SET </span>
+<span class="pl-c">     * `name` = CASE</span>
+<span class="pl-c">     *   WHEN `id` = 4569 THEN 'Cartwheel'</span>
+<span class="pl-c">     *   WHEN `id` = 5631 THEN 'Black Eye'</span>
+<span class="pl-c">     *   WHEN `id` = 1238 THEN 'Sombrero'</span>
+<span class="pl-c">     *   ELSE `name`</span>
+<span class="pl-c">     * END,</span>
+<span class="pl-c">     * `constellation` = CASE</span>
+<span class="pl-c">     *   WHEN `id` = 4569 THEN 'Sculptor'</span>
+<span class="pl-c">     *   WHEN `id` = 5631 THEN 'Coma Berenices'</span>
+<span class="pl-c">     *   WHEN `id` = 1238 THEN 'Virgo'</span>
+<span class="pl-c">     *   ELSE `constellation`</span>
+<span class="pl-c">     * END</span>
+<span class="pl-c">     * WHERE `id` IN(4569, 5631, 1238)</span>
+<span class="pl-c">     * AND `last_updated` &lt; '2015-01-01'</span>
+<span class="pl-c">     */</span>
+    <span class="pl-s">var</span> last_query <span class="pl-k">=</span> qb.last_query();
+});</pre></div>
+
+<p>As you can see, in each <code>CASE</code> statement, the <code>key</code> and it's value are being used to determine what to set the other items to. It's important to know that the <code>key</code> and it's <code>value</code> will not be updated in the batch update... they are just there to make sure we set the right values in the right place.</p>
+
+<hr>
+
+<p><a name="insert"></a></p>
+
+<h3>
+<a id="inserttabledataignoreon_dupecallback" class="anchor" href="#inserttabledataignoreon_dupecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.insert(table,data[,ignore[,on_dupe]],callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to insert into</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">Object</td>
+<td align="left">Required</td>
+<td align="left">The data to insert (ex. <code>{field: value}</code>)</td>
+</tr>
+<tr>
+<td align="left">ignore</td>
+<td align="left">Boolean</td>
+<td align="left">false</td>
+<td align="left">(optional) If TRUE, generates IGNORE syntax for your driver if it's supported; ignored (haha) if not supported.</td>
+</tr>
+<tr>
+<td align="left">on_dupe</td>
+<td align="left">String</td>
+<td align="left">undefined</td>
+<td align="left">(optional) Query suffix needed for generating an 'upsert' (ex. <code>ON DUPLICATE KEY UPDATE ...</code>).</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is used to insert new data into a table (SQL) or collection (NoSQL). All identifiers and values are escaped automatically when applicable. The response parameter of the callback should receive a response object with information like the ID of the newly inserted item, the affected rows (should be 1), etc...</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the result of the query.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>Here's a contrived example of how it might be used in an app made with the Express framework:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> express <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> app <span class="pl-k">=</span> express();
+<span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+app.post(<span class="pl-s1"><span class="pl-pds">'</span>/add_article<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">req</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-s">var</span> user_id <span class="pl-k">=</span> req.session.user_id;
+
+    <span class="pl-s">var</span> data <span class="pl-k">=</span> {
+        title<span class="pl-k">:</span> req.<span class="pl-sc">body</span>.first_name,
+        body<span class="pl-k">:</span> req.<span class="pl-sc">body</span>.last_name,
+        author<span class="pl-k">:</span> user_id,
+        publish_date<span class="pl-k">:</span> sanitize_age(req.<span class="pl-sc">body</span>.last_name)
+    };
+
+    pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+        qb.insert(<span class="pl-s1"><span class="pl-pds">'</span>articles<span class="pl-pds">'</span></span>, data, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+            qb.release();
+            <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+
+            <span class="pl-s">var</span> page_data <span class="pl-k">=</span> {
+                article_id<span class="pl-k">:</span> res.insert_id,
+            }
+            <span class="pl-k">return</span> res.render(<span class="pl-s1"><span class="pl-pds">'</span>/article_manager<span class="pl-pds">'</span></span>, page_data);
+        });
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="insert_batch"></a></p>
+
+<h3>
+<a id="insert_batchtabledatasetignoreon_dupecallback" class="anchor" href="#insert_batchtabledatasetignoreon_dupecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.insert_batch(table,dataset[,ignore[,on_dupe]],callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to delete records from.</td>
+</tr>
+<tr>
+<td align="left">dataset</td>
+<td align="left">Array</td>
+<td align="left">undefined</td>
+<td align="left">An array of objects containing the data you want to insert. Pass <em>can</em> pass an empty array if you want to be silly.</td>
+</tr>
+<tr>
+<td align="left">ignore</td>
+<td align="left">Boolean</td>
+<td align="left">false</td>
+<td align="left">(optional) If TRUE, generates IGNORE syntax for your driver if it's supported; ignored (haha) if not supported.</td>
+</tr>
+<tr>
+<td align="left">on_dupe</td>
+<td align="left">String</td>
+<td align="left">undefined</td>
+<td align="left">(optional) Query suffix needed for generating an 'upsert' (ex. <code>ON DUPLICATE KEY UPDATE ...</code>).</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The goal of this method is to speed the insertion of many rows. For instance, if you were insert 1,000 rows... Instead of making 1,000 queries to the server, you could just call <code>insert_batch()</code> and it would generate a single query to insert 1,000 rows. This is <em>much</em> more efficient and less taxing on your app and database server.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the result of the query.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+
+<span class="pl-s">var</span> data <span class="pl-k">=</span> [
+    {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>MySQL<span class="pl-pds">'</span></span>, version<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>5.5.40<span class="pl-pds">'</span></span>},
+    {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Mongo<span class="pl-pds">'</span></span>, version<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>2.6.7<span class="pl-pds">'</span></span> },
+    {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Postgres<span class="pl-pds">'</span></span>, version<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>8.4<span class="pl-pds">'</span></span>}
+];
+
+qb.insert_batch(<span class="pl-s1"><span class="pl-pds">'</span>db_engines<span class="pl-pds">'</span></span>, data, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+
+    <span class="pl-c">// INSERT INTO `db_engines` (`name`, `version`) </span>
+    <span class="pl-c">// VALUES ('MySQL', '5.5.40'), ('Mongo', '2.6.7'), ('Postgres', '8.4');</span>
+    <span class="pl-en">console</span><span class="pl-s3">.log</span>(qb.last_query());
+});</pre></div>
+
+<hr>
+
+<p><a name="insert_ignore"></a></p>
+
+<h3>
+<a id="insert_ignoretabledataon_dupecallback" class="anchor" href="#insert_ignoretabledataon_dupecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.insert_ignore(table,data[,on_dupe],callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to delete records from.</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">Object</td>
+<td align="left">undefined</td>
+<td align="left">An array of objects containing the data you want to insert. Pass <em>can</em> pass an empty array if you want to be silly.</td>
+</tr>
+<tr>
+<td align="left">on_dupe</td>
+<td align="left">String</td>
+<td align="left">undefined</td>
+<td align="left">(optional) Query suffix needed for generating an 'upsert' (ex. <code>ON DUPLICATE KEY UPDATE ...</code>).</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is just a wrapper to the <code>insert()</code> method which passes <code>true</code> to the ignore parameter. The purpose of using <code>IGNORE</code> syntax, for the drivers that support it, is so that a row insertion will be skipped if it's an exact duplicate of another row in the database. Optionally, you can provide a 3rd paramter containing a query that will update specified keys in the case of a duplicate entry (instead of simply ignoring it).</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the result of the query.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">/*</span>
+<span class="pl-c"> * Current Table Structure:</span>
+<span class="pl-c"> * </span>
+<span class="pl-c"> * [</span>
+<span class="pl-c"> *      {name: 'MySQL', version: '5.5.40', last_modified: 1423252221 },</span>
+<span class="pl-c"> *      {name: 'Mongo', version: '2.6.7',  last_modified: 1423252232 },</span>
+<span class="pl-c"> *      {name: 'Postgres', version: '8.4', last_modified: 1423252248 }</span>
+<span class="pl-c"> *  ]</span>
+<span class="pl-c"> */</span>
+
+<span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+qb.insert_ignore(<span class="pl-s1"><span class="pl-pds">'</span>db_engines<span class="pl-pds">'</span></span>, data, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+    <span class="pl-s">var</span> data <span class="pl-k">=</span> {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Postgres<span class="pl-pds">'</span></span>, version<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>8.4<span class="pl-pds">'</span></span>};
+
+    <span class="pl-c">// INSERT INTO `db_engines` (`name`, `version`) VALUES ('Postgres', '8.4');</span>
+    <span class="pl-en">console</span><span class="pl-s3">.log</span>(qb.last_query());
+
+    <span class="pl-c">// 0 (because this data already exists...)</span>
+    <span class="pl-en">console</span><span class="pl-s3">.log</span>(res.affected_rows);
+});</pre></div>
+
+<p>This time we'll do it with an <code>on_dupe</code> string</p>
+
+<div class="highlight highlight-javascript"><pre>qb.insert_ignore(<span class="pl-s1"><span class="pl-pds">'</span>db_engines<span class="pl-pds">'</span></span>, data, <span class="pl-s1"><span class="pl-pds">'</span>ON DUPLICATE KEY UPDATE last_modified = NOW()<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+    <span class="pl-s">var</span> data <span class="pl-k">=</span> {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Postgres<span class="pl-pds">'</span></span>, version<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>8.4<span class="pl-pds">'</span></span>};
+
+    <span class="pl-c">// INSERT INTO `db_engines` (`name`, `version`) VALUES ('Postgres', '8.4');</span>
+    <span class="pl-en">console</span><span class="pl-s3">.log</span>(qb.last_query());
+
+    <span class="pl-c">// 1 (because we updated the last_modified field)</span>
+    <span class="pl-en">console</span><span class="pl-s3">.log</span>(res.affected_rows);
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * Resulting Table Structure:</span>
+<span class="pl-c">     * </span>
+<span class="pl-c">     * [</span>
+<span class="pl-c">     *      {name: 'MySQL', version: '5.5.40', last_modified: 1423252221 },</span>
+<span class="pl-c">     *      {name: 'Mongo', version: '2.6.7',  last_modified: 1423252232 },</span>
+<span class="pl-c">     *      {name: 'Postgres', version: '8.4', last_modified: 1423264972 }</span>
+<span class="pl-c">     *  ]</span>
+<span class="pl-c">     */</span>
+});</pre></div>
+
+<hr>
+
+<p><a name="delete"></a></p>
+
+<h3>
+<a id="deletetablewherecallback" class="anchor" href="#deletetablewherecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.delete(table,where,callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to delete records from.</td>
+</tr>
+<tr>
+<td align="left">where</td>
+<td align="left">Object</td>
+<td align="left">undefined</td>
+<td align="left">(optional) Used to avoid having to call <code>.where()</code> seperately. Pass NULL if you don't want to use it.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method is used to delete records from a table (SQL) or collection (NoSQL). All identifiers and values are escaped automatically when applicable. The response parameter of the callback should receive a response object with the number of affected rows.</p>
+
+<p><strong>NOTE:</strong> If tables are added to the querybuilder query cache via the <code>from()</code> method, only first table in the array (the first added) will be used for this method.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the result of the query.</p>
+
+<p><strong>Examples</strong></p>
+
+<p>Here's a contrived example of how it might be used in an app made with the Express framework (NOTE: you should do better with error handling):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> express <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> app <span class="pl-k">=</span> express();
+<span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+app.post(<span class="pl-s1"><span class="pl-pds">'</span>/delete_comment/:id<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">req</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-s">var</span> comment_id <span class="pl-k">=</span> req.params.<span class="pl-sc">id</span>;
+
+    pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+        qb.get(<span class="pl-s1"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>, {id<span class="pl-k">:</span> id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+            <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+            <span class="pl-s">var</span> article_id <span class="pl-k">=</span> res.article_id;
+
+            qb.delete(<span class="pl-s1"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>, {id<span class="pl-k">:</span> id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+                qb.release();
+                <span class="pl-k">if</span> (err) <span class="pl-k">return</span> <span class="pl-en">console</span><span class="pl-s3">.error</span>(err);
+
+                <span class="pl-s">var</span> page_data <span class="pl-k">=</span> {
+                    num_removed<span class="pl-k">:</span> res.affected_rows,
+                }
+                <span class="pl-k">return</span> res.render(<span class="pl-s1"><span class="pl-pds">'</span>/article/<span class="pl-pds">'</span></span> <span class="pl-k">+</span> article_id, page_data);
+            });
+        });
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="truncate"></a></p>
+
+<h3>
+<a id="truncatetablecallback" class="anchor" href="#truncatetablecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.truncate(table,callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to truncate.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>For drivers that support it (MySQL), this method will utilize the <code>TRUNCATE</code> directive to empty a table of all it's data. The main difference between the <code>truncate()</code> method and the <code>empty_table()</code> method is that, when available, and when possible, truncating a table will reset your AUTO_INCREMENT counter back to zero. If you simply delete every row from a table, the next item inserted will just continue with the next highest ID from the deleted records.</p>
+
+<p>For drivers that don't support the truncate method, this will simply act as a wrapper to the <a href="#empty_table">.empty_table()</a> method.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the result of the query.</p>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">/*</span>
+<span class="pl-c"> * Assume we have a table like this to start with...</span>
+<span class="pl-c"> * [</span>
+<span class="pl-c"> *   { id: 1, name: 'Mary' },</span>
+<span class="pl-c"> *   { id: 2, name: 'Jane' },</span>
+<span class="pl-c"> *   { id: 3, name: 'Joe'  }</span>
+<span class="pl-c"> * ];</span>
+<span class="pl-c"> */</span>
+
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.truncate(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+        qb.insert(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Bob<span class="pl-pds">'</span></span>}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+            <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+            qb.get_where(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, {id<span class="pl-k">:</span> res.insert_id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+                qb.release();
+                <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+                <span class="pl-c">// { id: 1, name: 'Bob' } (notice ID is 1)</span>
+                <span class="pl-en">console</span>.<span class="pl-sc">dir</span>(res);
+            });
+        });
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="empty_table"></a></p>
+
+<h3>
+<a id="empty_tabletablecallback" class="anchor" href="#empty_tabletablecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.empty_table(table,callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Required</td>
+<td align="left">The table/collection you'd like to truncate.</td>
+</tr>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the driver has responded.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This method will allow you to delete all records from a table/collection.</p>
+
+<p><strong>Type of Response Sent to Callback</strong></p>
+
+<p>Object containing information about the result of the query.</p>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">/*</span>
+<span class="pl-c"> * Assume we have a table like this to start with...</span>
+<span class="pl-c"> * [</span>
+<span class="pl-c"> *   { id: 1, name: 'Mary' },</span>
+<span class="pl-c"> *   { id: 2, name: 'Jane' },</span>
+<span class="pl-c"> *   { id: 3, name: 'Joe'  }</span>
+<span class="pl-c"> * ];</span>
+<span class="pl-c"> */</span>
+
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.empty_table(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+        qb.insert(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, {name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Bob<span class="pl-pds">'</span></span>}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+            <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+            qb.get_where(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, {id<span class="pl-k">:</span> res.insert_id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+                qb.release();
+                <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+                <span class="pl-c">// { id: 4, name: 'Bob' } (notice ID is 4)</span>
+                <span class="pl-en">console</span>.<span class="pl-sc">dir</span>(res);
+            });
+        });
+    });
+});</pre></div>
+
+<hr>
+
+<h2>
+<a id="other-library-specifc-methods" class="anchor" href="#other-library-specifc-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other Library-Specifc Methods</h2>
+
+<p>These are methods that aren't part of the query-building chain, but, rather, methods you might call before, after, or during (but not as part of) building a query.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">API Method</th>
+<th align="center">MySQL</th>
+<th align="center">MSSQL</th>
+<th align="center">Oracle</th>
+<th align="center">SQLite</th>
+<th align="center">Postgres</th>
+<th align="center">Mongo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#get_connection">get_connection()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#release">release()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#last_query">last_query()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#escape">escape()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#get_compiled_select">get_compiled_select()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#get_compiled_insert">get_compiled_insert()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#get_compiled_update">get_compiled_update()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left"><a href="#get_compiled_delete">get_compiled_delete()</a></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<p><a name="get_connection"></a></p>
+
+<h3>
+<a id="get_connectioncallback" class="anchor" href="#get_connectioncallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get_connection(callback)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">callback</td>
+<td align="left">Function</td>
+<td align="left">Required</td>
+<td align="left">What to do when the connection is retrieved from the pool.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Used to get a new connection from the connection pool or cluster pool. An instances of the QueryBuilder adapter for your specific connection will be passed to the callback. Make sure that your connection is <a href="#release">release</a>d when you are done with it!</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.limit(<span class="pl-c1">10</span>).get(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        qb.release();
+        <span class="pl-c">// Do stuff with results or err</span>
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="release"></a></p>
+
+<h3>
+<a id="release" class="anchor" href="#release" aria-hidden="true"><span class="octicon octicon-link"></span></a>.release()</h3>
+
+<p>Releases a connection back to the pool when you are done with it. Calling this is <em>super</em> important!</p>
+
+<p><strong>Examples</strong></p>
+
+<p>Below is a contrived example (with no error handling--for brevity) that gets a list of all users in a users table where their username starts with a <code>|</code> character. It then loops over each one and removes the <code>|</code> from the username and re-inserts it. Notice that the connection is not released until all the queries that needed to be executed have been executed.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.like(<span class="pl-s1"><span class="pl-pds">'</span>username<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>|<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>right<span class="pl-pds">'</span></span>).get_where(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, {active<span class="pl-k">:</span> <span class="pl-c1">true</span>}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        <span class="pl-s">var</span> users <span class="pl-k">=</span> users;
+        (<span class="pl-st">function</span> <span class="pl-en">update_user</span>() {
+            <span class="pl-s">var</span> user <span class="pl-k">=</span> users.<span class="pl-s3">shift</span>();
+            user.username <span class="pl-k">=</span> user.username.<span class="pl-s3">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\^</span><span class="pl-k">|</span><span class="pl-pds">/</span></span>,<span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>);
+
+            qb.update(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, user, {id<span class="pl-k">:</span> user.<span class="pl-sc">id</span>}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+                <span class="pl-k">if</span> (user.<span class="pl-sc">length</span> <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+                    <span class="pl-s3">setTimeout</span>(update_user,<span class="pl-c1">0</span>);
+                } <span class="pl-k">else</span> {
+                    qb.release();
+                }
+            });
+        })();
+    });
+});</pre></div>
+
+<p>Here's a simpler example so you can better see how it will most often be used</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    qb.get_where(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, {username<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>foobar<span class="pl-pds">'</span></span>}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        qb.release();
+        <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+        <span class="pl-en">console</span>.<span class="pl-sc">dir</span>(res);
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="last_query"></a></p>
+
+<h3>
+<a id="last_query" class="anchor" href="#last_query" aria-hidden="true"><span class="octicon octicon-link"></span></a>.last_query()</h3>
+
+<p>This is used to retrieve the query string that was most-recently executed. This MUST be called before closing the connection or releasing a connection back to the pool. This is useful for debugging what the <code>node-querybuilder</code> library is executing (or trying to execute).</p>
+
+<p>If you'd rather the engine not execute the query first, you can always use the appropriate <a href="#compilation_methods">compilation methods</a> detailed below.</p>
+
+<p><strong>Examples</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> settings <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> pool <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(settings, <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>pool<span class="pl-pds">'</span></span>);
+pool.get_connection(<span class="pl-st">function</span>(<span class="pl-vpf">qb</span>) {
+    <span class="pl-s">var</span> id <span class="pl-k">=</span> <span class="pl-c1">4531</span>;
+    qb.get(<span class="pl-s1"><span class="pl-pds">'</span>comments<span class="pl-pds">'</span></span>, {id<span class="pl-k">:</span> id}, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+        <span class="pl-c">// SELECT * FROM `comments` WHERE `id` = 4531</span>
+        <span class="pl-en">console</span><span class="pl-s3">.log</span>(qb.last_query());
+        qb.release();
+    });
+});</pre></div>
+
+<hr>
+
+<p><a name="escape"></a></p>
+
+<h3>
+<a id="escapevalue" class="anchor" href="#escapevalue" aria-hidden="true"><span class="octicon octicon-link"></span></a>.escape(value)</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">value</td>
+<td align="left">Mixed</td>
+<td align="left">Required</td>
+<td align="left">The value to escape based on your database driver</td>
+</tr>
+</tbody>
+</table>
+
+<p>This can be used to excape a value using your driver's native escape method. If your driver does not have a native escape method, the value will simply be returned. This is useful for when you want to build a SQL string manually (for instance, you don't want certain items to be escaped).</p>
+
+<p><strong>What should happen:</strong>
+<em>Examples given are for MySQL</em></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Input Type</th>
+<th align="center">Output Type</th>
+<th align="center">Ex. Input</th>
+<th align="center">Ex. Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">String</td>
+<td align="center">String</td>
+<td align="center">"\n\s\x1a"</td>
+<td align="center">"\n\s\x1a"</td>
+</tr>
+<tr>
+<td align="left">Integer</td>
+<td align="center">String</td>
+<td align="center">76</td>
+<td align="center">'76'</td>
+</tr>
+<tr>
+<td align="left">Array</td>
+<td align="center">String</td>
+<td align="center">[1,2,3]</td>
+<td align="center">'1','2',3'</td>
+</tr>
+<tr>
+<td align="left">Date</td>
+<td align="center">String</td>
+<td align="center">new Date()</td>
+<td align="center">'2015-01-30 16:54:23.1856'</td>
+</tr>
+<tr>
+<td align="left">Buffer</td>
+<td align="center">String</td>
+<td align="center">new Buffer(1)</td>
+<td align="center">'X\'00\''</td>
+</tr>
+<tr>
+<td align="left">Object</td>
+<td align="center">String</td>
+<td align="center">{foo: 'bar', i: 3}</td>
+<td align="center">"<code>foo</code> = 'bar', <code>i</code> = 3"</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(<span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>), <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> sql <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>SELECT count(*) FROM `star_systems` WHERE <span class="pl-pds">'</span></span> <span class="pl-k">+</span> qb.<span class="pl-s3">escape</span>({planet_num<span class="pl-k">:</span> <span class="pl-c1">5</span>}) <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">'</span> LIMIT 10<span class="pl-pds">'</span></span>;
+qb.query(sql, <span class="pl-st">function</span>(<span class="pl-vpf">err</span>, <span class="pl-vpf">res</span>) {
+    <span class="pl-en">console</span>.<span class="pl-sc">dir</span>(res);
+});</pre></div>
+
+<hr>
+
+<p><a name="compilation_methods"></a></p>
+
+<h3>
+<a id="sql-compilation-methods" class="anchor" href="#sql-compilation-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>SQL Compilation Methods</h3>
+
+<p>These methods can be used to build a query string without having to execute it. This is a fantastic option if you want to use the querybuilder to simply build queries and display the resulting string or to send the compiled query string off to a driver/engine other than the one offered by <code>node-querybuilder</code>.</p>
+
+<p>These are excellent educational tools and can be used like a SQL/NoSQL language rosetta stone of sorts.</p>
+
+<p>These methods are not asynchronous and, therefore, just return the compiled query string.</p>
+
+<hr>
+
+<p><a name="get_compiled_select"></a></p>
+
+<h4>
+<a id="get_compiled_selecttable" class="anchor" href="#get_compiled_selecttable" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get_compiled_select(table)</h4>
+
+<p><strong><em>Alias:</em></strong> <em>compile_select(table)</em></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Undefined</td>
+<td align="left">(optional) Used to avoid having to call .from() seperately.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Compiles a SELECT-like query into a properly-escaped string.</p>
+
+<p><strong>Example:</strong></p>
+
+<p>Get certain details of a user account</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(<span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>), <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+
+<span class="pl-s">var</span> sql <span class="pl-k">=</span> qb
+    .<span class="pl-s3">select</span>([<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>username<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>first_name<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>last_name<span class="pl-pds">'</span></span>])
+    .from(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>)
+    .like(<span class="pl-s1"><span class="pl-pds">'</span>username<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>k<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>after<span class="pl-pds">'</span></span>)
+    .get_compiled_select();
+
+<span class="pl-c">// SELECT `id`, `username`, `first_name`, `last_name` FROM `users` WHERE `username` LIKE 'k%'   </span>
+<span class="pl-en">console</span><span class="pl-s3">.log</span>(sql);</pre></div>
+
+<hr>
+
+<p><a name="get_compiled_insert"></a></p>
+
+<h4>
+<a id="get_compiled_inserttable" class="anchor" href="#get_compiled_inserttable" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get_compiled_insert(table)</h4>
+
+<p><strong><em>Alias:</em></strong> <em>compile_insert(table)</em></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Undefined</td>
+<td align="left">(optional) Used to avoid having to call .from() seperately.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Compiles a INSERT-like query into a properly-escaped string.</p>
+
+<p><strong>Example:</strong></p>
+
+<p>Add a new user to a <code>users</code> table.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(<span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>), <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> crypto <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>crypto<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> data <span class="pl-k">=</span> {
+    username<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>foobar<span class="pl-pds">'</span></span>,
+    password<span class="pl-k">:</span> crypto.createHash(<span class="pl-s1"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>).update(<span class="pl-s1"><span class="pl-pds">'</span>password<span class="pl-pds">'</span></span>).digest(<span class="pl-s1"><span class="pl-pds">'</span>hex<span class="pl-pds">'</span></span>),
+    first_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Foo<span class="pl-pds">'</span></span>,
+    last_name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Bar<span class="pl-pds">'</span></span>
+};
+<span class="pl-s">var</span> sql <span class="pl-k">=</span> qb.set(data).get_compiled_insert(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// INSERT INTO `users` (`username`, `password`, `first_name`, `last_name`) VALUES ('foobar', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 'Foo', 'Bar')</span>
+<span class="pl-en">console</span><span class="pl-s3">.log</span>(sql);
+});</pre></div>
+
+<hr>
+
+<p><a name="get_compiled_update"></a></p>
+
+<h4>
+<a id="get_compiled_updatetable" class="anchor" href="#get_compiled_updatetable" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get_compiled_update(table)</h4>
+
+<p><strong><em>Alias:</em></strong> <em>compile_update(table)</em></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Undefined</td>
+<td align="left">(optional) Used to avoid having to call .from() seperately.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Compiles an UPDATE-like query into a properly-escaped string.</p>
+
+<p><strong>Example:</strong></p>
+
+<p>Update the password of a user</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(<span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>), <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> crypto <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>crypto<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> data <span class="pl-k">=</span> {
+    password<span class="pl-k">:</span> crypto.createHash(<span class="pl-s1"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>).update(<span class="pl-s1"><span class="pl-pds">'</span>P@$$w0rD<span class="pl-pds">'</span></span>).digest(<span class="pl-s1"><span class="pl-pds">'</span>hex<span class="pl-pds">'</span></span>),
+};
+<span class="pl-s">var</span> sql <span class="pl-k">=</span> qb
+    .where(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>,<span class="pl-c1">4321</span>)
+    .set(data)
+    .get_compiled_update(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// UPDATE `users` SET `password` = '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8' WHERE `id` = 4321</span>
+<span class="pl-en">console</span><span class="pl-s3">.log</span>(sql);</pre></div>
+
+<hr>
+
+<p><a name="get_compiled_delete"></a></p>
+
+<h4>
+<a id="get_compiled_deletetable" class="anchor" href="#get_compiled_deletetable" aria-hidden="true"><span class="octicon octicon-link"></span></a>.get_compiled_delete(table)</h4>
+
+<p><strong><em>Alias:</em></strong> <em>compile_delete(table)</em></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">table</td>
+<td align="left">String</td>
+<td align="left">Undefined</td>
+<td align="left">(optional) Used to avoid having to call .from() seperately.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Compiles a SELECT-like query into a properly-escaped string.</p>
+
+<p><strong>Example:</strong></p>
+
+<p>Delete a user</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> qb <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>node-querybuilder<span class="pl-pds">'</span></span>).QueryBuilder(<span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>db.json<span class="pl-pds">'</span></span>), <span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> sql <span class="pl-k">=</span> qb.where(<span class="pl-s1"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>,<span class="pl-c1">4321</span>).get_compiled_delete(<span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// DELETE FROM `users` WHERE `id` = 4321</span>
+<span class="pl-en">console</span><span class="pl-s3">.log</span>(sql);
+});</pre></div>
+
+<hr>
+
+<h1>
+<a id="contribute" class="anchor" href="#contribute" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contribute</h1>
+
+<p>Got a missing feature you'd like to use? Found a bug? Go ahead and fork this repo, build the feature and issue a pull request.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
