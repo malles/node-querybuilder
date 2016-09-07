@@ -1178,7 +1178,7 @@ var QueryBuilder = function() {
                 var v = key[i];
                 if (typeof v === 'undefined') continue;
 
-                if ((typeof v).match(/^(number|string|boolean)$/) === null && v !== null) {
+                if ((typeof v).match(/^(number|string|boolean)$/) === null && v !== null && v.getFullYear === undefined) {
                     throw new Error("set(): Invalid value provided! (provided: " + v + " (type: " + (typeof v) + ")");
                 }
                 else if (typeof v === 'number' && (v === Infinity || v !== +v)) {
